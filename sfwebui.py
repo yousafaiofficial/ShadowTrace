@@ -154,7 +154,7 @@ class SpiderFootWebUi:
             version (str): CherryPy version
 
         Returns:
-            str: HTTP response template
+            str: HTML response template
         """
         templ = Template(filename='spiderfoot/templates/error.tmpl', lookup=self.lookup)
         return templ.render(message='Not Found', docroot=self.docroot, status=status, version=__version__)
@@ -988,6 +988,100 @@ class SpiderFootWebUi:
                             pageid="SCANLIST")
 
     @cherrypy.expose
+    def exposuregraph(self: 'SpiderFootWebUi', id: str) -> str:
+        """Exposure Intelligence graph page.
+
+        Args:
+            id (str): scan ID
+
+        Returns:
+            str: Exposure intelligence dashboard HTML
+        """
+        dbh = SpiderFootDb(self.config)
+        res = dbh.scanInstanceGet(id)
+        if res is None:
+            return self.error("Scan ID not found.")
+
+        templ = Template(filename='spiderfoot/templates/exposure.tmpl', lookup=self.lookup, input_encoding='utf-8')
+        return templ.render(id=id, name=html.escape(res[0]), status=res[5], docroot=self.docroot, version=__version__, pageid="EXPOSURE")
+
+    @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def exposureinfo(self: 'SpiderFootWebUi', id: str) -> dict:
+        """Fetch Exposure Intelligence Analysis results as JSON.
+
+        Args:
+            id (str): scan ID
+
+        Returns:
+            dict: Exposure entities, relationships, evidence, summary, and remediation items
+        """
+        dbh = SpiderFootDb(self.config)
+        res = dbh.scanInstanceGet(id)
+        if not res:
+            return self.error("Scan ID not found.")
+
+        summary = dbh.exposureSummaryGet(id)
+        entities = dbh.exposureEntitiesGet(id)
+        relationships = dbh.exposureRelationshipsGet(id)
+        evidence = dbh.exposureEvidenceGet(id)
+
+        # If scan finished but hasn't been analyzed yet, run ExposureEngine on demand
+        if not summary and res[5] in ["FINISHED", "COMPLETED"]:
+            from spiderfoot.exposure import ExposureEngine
+            engine = ExposureEngine(dbh)
+            analysis = engine.analyze_scan(id)
+            return analysis
+
+        formatted_entities = [
+            {"id": e[0], "type": e[1], "value": e[2], "risk_score": e[3], "first_seen": e[4]}
+            for e in entities
+        ]
+
+        formatted_relationships = []
+        for r in relationships:
+            try:
+                reasoning = json.loads(r[8]) if len(r) > 8 and r[8] else []
+            except Exception:
+                reasoning = [r[8]] if len(r) > 8 and r[8] else []
+
+            formatted_relationships.append({
+                "id": r[0],
+                "source_entity_id": r[1],
+                "target_entity_id": r[2],
+                "rel_type": r[3],
+                "confidence_score": r[4],
+                "confidence_tier": r[5],
+                "risk_impact": r[6],
+                "reasoning": reasoning
+            })
+
+        formatted_evidence = [
+            {
+                "id": ev[0],
+                "relationship_id": ev[1],
+                "source_module": ev[2],
+                "source_event_hash": ev[3],
+                "observation_mode": ev[4],
+                "raw_data": ev[5],
+                "timestamp": ev[6]
+            }
+            for ev in evidence
+        ]
+
+        return {
+            "scan_id": id,
+            "scan_name": res[0],
+            "scan_target": res[1],
+            "scan_status": res[5],
+            "entities": formatted_entities,
+            "relationships": formatted_relationships,
+            "evidence": formatted_evidence,
+            "exposure_summary": summary
+        }
+
+    @cherrypy.expose
+
     def opts(self: 'SpiderFootWebUi', updated: str = None) -> str:
         """Show module and global settings page.
 

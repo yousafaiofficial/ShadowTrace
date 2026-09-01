@@ -105,7 +105,48 @@ class SpiderFootDb:
         "CREATE INDEX idx_scan_results_srchash ON tbl_scan_results (scan_instance_id, source_event_hash)",
         "CREATE INDEX idx_scan_logs ON tbl_scan_log (scan_instance_id)",
         "CREATE INDEX idx_scan_correlation ON tbl_scan_correlation_results (scan_instance_id, id)",
-        "CREATE INDEX idx_scan_correlation_events ON tbl_scan_correlation_results_events (correlation_id)"
+        "CREATE INDEX idx_scan_correlation_events ON tbl_scan_correlation_results_events (correlation_id)",
+        "CREATE TABLE tbl_scan_entities ( \
+            id                  VARCHAR NOT NULL PRIMARY KEY, \
+            scan_instance_id    VARCHAR NOT NULL REFERENCES tbl_scan_instance(guid), \
+            entity_type         VARCHAR NOT NULL, \
+            entity_value        VARCHAR NOT NULL, \
+            risk_score          INT NOT NULL DEFAULT 0, \
+            first_seen          INT DEFAULT 0 \
+        )",
+        "CREATE TABLE tbl_scan_relationships ( \
+            id                  VARCHAR NOT NULL PRIMARY KEY, \
+            scan_instance_id    VARCHAR NOT NULL REFERENCES tbl_scan_instance(guid), \
+            source_entity_id    VARCHAR NOT NULL REFERENCES tbl_scan_entities(id), \
+            target_entity_id    VARCHAR NOT NULL REFERENCES tbl_scan_entities(id), \
+            rel_type            VARCHAR NOT NULL, \
+            confidence_score    INT NOT NULL DEFAULT 100, \
+            confidence_tier     VARCHAR NOT NULL, \
+            risk_impact         INT NOT NULL DEFAULT 0, \
+            reasoning           VARCHAR \
+        )",
+        "CREATE TABLE tbl_scan_evidence ( \
+            id                  VARCHAR NOT NULL PRIMARY KEY, \
+            scan_instance_id    VARCHAR NOT NULL REFERENCES tbl_scan_instance(guid), \
+            relationship_id     VARCHAR NOT NULL, \
+            source_module       VARCHAR NOT NULL, \
+            source_event_hash   VARCHAR NOT NULL, \
+            observation_mode    VARCHAR NOT NULL, \
+            raw_data            VARCHAR, \
+            timestamp           INT DEFAULT 0 \
+        )",
+        "CREATE TABLE tbl_scan_exposure_summary ( \
+            scan_instance_id    VARCHAR NOT NULL PRIMARY KEY REFERENCES tbl_scan_instance(guid), \
+            total_risk_score    INT NOT NULL DEFAULT 0, \
+            risk_breakdown      VARCHAR, \
+            top_priorities      VARCHAR, \
+            remediation_plan    VARCHAR, \
+            why_this_matters    VARCHAR \
+        )",
+        "CREATE INDEX idx_scan_entities ON tbl_scan_entities (scan_instance_id, id)",
+        "CREATE INDEX idx_scan_relationships ON tbl_scan_relationships (scan_instance_id, source_entity_id, target_entity_id)",
+        "CREATE INDEX idx_scan_evidence ON tbl_scan_evidence (scan_instance_id, relationship_id)",
+        "CREATE INDEX idx_scan_exposure_summary ON tbl_scan_exposure_summary (scan_instance_id)"
     ]
 
     eventDetails = [
@@ -368,11 +409,21 @@ class SpiderFootDb:
                     for query in self.createSchemaQueries:
                         if "correlation" in query:
                             self.dbh.execute(query)
-                        self.conn.commit()
+                    self.conn.commit()
                 except sqlite3.Error:
-                    raise IOError("Looks like you are running a pre-4.0 database. Unfortunately "
-                                  "SpiderFoot wasn't able to migrate you, so you'll need to delete "
-                                  "your SpiderFoot database in order to proceed.") from None
+                    pass
+
+            # Auto-migration for Exposure Intelligence tables
+            try:
+                self.dbh.execute("SELECT COUNT(*) FROM tbl_scan_entities")
+            except sqlite3.Error:
+                try:
+                    for query in self.createSchemaQueries:
+                        if any(k in query for k in ["entities", "relationships", "evidence", "exposure"]):
+                            self.dbh.execute(query)
+                    self.conn.commit()
+                except sqlite3.Error:
+                    pass
 
             if init:
                 for row in self.eventDetails:
@@ -1800,3 +1851,125 @@ class SpiderFootDb:
                     raise IOError("Unable to create correlation result in database") from e
 
         return uniqueId
+
+    #
+    # Exposure Intelligence Database Operations
+    #
+
+    def exposureEntitiesSave(self, instanceId: str, entityRows: list) -> None:
+        """Saves resolved entities into tbl_scan_entities."""
+        if not instanceId or not entityRows:
+            return
+
+        qry = "INSERT OR REPLACE INTO tbl_scan_entities \
+            (id, scan_instance_id, entity_type, entity_value, risk_score, first_seen) \
+            VALUES (?, ?, ?, ?, ?, ?)"
+
+        with self.dbhLock:
+            for row in entityRows:
+                try:
+                    self.dbh.execute(qry, row)
+                except sqlite3.Error:
+                    continue
+            self.conn.commit()
+
+    def exposureEntitiesGet(self, instanceId: str) -> list:
+        """Fetches resolved entities for a scan instance."""
+        qry = "SELECT id, entity_type, entity_value, risk_score, first_seen \
+            FROM tbl_scan_entities WHERE scan_instance_id = ?"
+        with self.dbhLock:
+            try:
+                self.dbh.execute(qry, (instanceId,))
+                return self.dbh.fetchall()
+            except sqlite3.Error:
+                return []
+
+    def exposureRelationshipsSave(self, instanceId: str, relRows: list) -> None:
+        """Saves directional relationships into tbl_scan_relationships."""
+        if not instanceId or not relRows:
+            return
+
+        qry = "INSERT OR REPLACE INTO tbl_scan_relationships \
+            (id, scan_instance_id, source_entity_id, target_entity_id, rel_type, confidence_score, confidence_tier, risk_impact, reasoning) \
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
+        with self.dbhLock:
+            for row in relRows:
+                try:
+                    self.dbh.execute(qry, row)
+                except sqlite3.Error:
+                    continue
+            self.conn.commit()
+
+    def exposureRelationshipsGet(self, instanceId: str) -> list:
+        """Fetches relationships for a scan instance."""
+        qry = "SELECT id, source_entity_id, target_entity_id, rel_type, confidence_score, confidence_tier, risk_impact, reasoning \
+            FROM tbl_scan_relationships WHERE scan_instance_id = ?"
+        with self.dbhLock:
+            try:
+                self.dbh.execute(qry, (instanceId,))
+                return self.dbh.fetchall()
+            except sqlite3.Error:
+                return []
+
+    def exposureEvidenceSave(self, instanceId: str, evRows: list) -> None:
+        """Saves evidence records into tbl_scan_evidence."""
+        if not instanceId or not evRows:
+            return
+
+        qry = "INSERT OR REPLACE INTO tbl_scan_evidence \
+            (id, scan_instance_id, relationship_id, source_module, source_event_hash, observation_mode, raw_data, timestamp) \
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+
+        with self.dbhLock:
+            for row in evRows:
+                try:
+                    self.dbh.execute(qry, row)
+                except sqlite3.Error:
+                    continue
+            self.conn.commit()
+
+    def exposureEvidenceGet(self, instanceId: str) -> list:
+        """Fetches evidence records for a scan instance."""
+        qry = "SELECT id, relationship_id, source_module, source_event_hash, observation_mode, raw_data, timestamp \
+            FROM tbl_scan_evidence WHERE scan_instance_id = ?"
+        with self.dbhLock:
+            try:
+                self.dbh.execute(qry, (instanceId,))
+                return self.dbh.fetchall()
+            except sqlite3.Error:
+                return []
+
+    def exposureSummarySave(self, instanceId: str, totalRiskScore: int, riskBreakdownJson: str, topPrioritiesJson: str, remediationJson: str, whyThisMatters: str) -> None:
+        """Saves exposure analysis summary into tbl_scan_exposure_summary."""
+        qry = "INSERT OR REPLACE INTO tbl_scan_exposure_summary \
+            (scan_instance_id, total_risk_score, risk_breakdown, top_priorities, remediation_plan, why_this_matters) \
+            VALUES (?, ?, ?, ?, ?, ?)"
+
+        with self.dbhLock:
+            try:
+                self.dbh.execute(qry, (instanceId, totalRiskScore, riskBreakdownJson, topPrioritiesJson, remediationJson, whyThisMatters))
+                self.conn.commit()
+            except sqlite3.Error:
+                pass
+
+    def exposureSummaryGet(self, instanceId: str) -> dict:
+        """Fetches exposure summary for a scan instance."""
+        qry = "SELECT total_risk_score, risk_breakdown, top_priorities, remediation_plan, why_this_matters \
+            FROM tbl_scan_exposure_summary WHERE scan_instance_id = ?"
+        with self.dbhLock:
+            try:
+                self.dbh.execute(qry, (instanceId,))
+                row = self.dbh.fetchone()
+                if row:
+                    return {
+                        "total_risk_score": row[0],
+                        "risk_breakdown": json.loads(row[1]) if row[1] else [],
+                        "top_priorities": json.loads(row[2]) if row[2] else [],
+                        "remediation_plan": json.loads(row[3]) if row[3] else [],
+                        "why_this_matters": row[4]
+                    }
+                return {}
+            except sqlite3.Error:
+                return {}
+

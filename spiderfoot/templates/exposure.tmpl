@@ -1,0 +1,446 @@
+## -*- coding: utf-8 -*-
+<%include file="HEADER.tmpl"/>
+
+<style>
+.exposure-container {
+    padding: 15px;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    color: #e2e8f0;
+    background-color: #0f172a;
+    min-height: calc(100vh - 70px);
+}
+.exposure-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+.metric-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+.metric-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+.score-badge-critical { color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.4); }
+.score-badge-high { color: #fb923c; text-shadow: 0 0 10px rgba(251, 146, 60, 0.4); }
+.score-badge-medium { color: #facc15; }
+.score-badge-low { color: #4ade80; }
+
+.toolbar-panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#graph-container {
+    width: 100%;
+    height: 600px;
+    background: #090d16;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    position: relative;
+}
+
+.inspector-panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.badge-observed { background-color: #0284c7; color: #fff; }
+.badge-inferred { background-color: #d97706; color: #fff; }
+.badge-confirmed { background-color: #16a34a; color: #fff; }
+
+.remediation-box {
+    background: #0f172a;
+    border-left: 4px solid #38bdf8;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+</style>
+
+<div class="exposure-container">
+    <div class="exposure-header">
+        <div class="row">
+            <div class="col-md-8">
+                <h2 style="margin: 0; color: #f8fafc;">
+                    <i class="glyphicon glyphicon-fire" style="color: #fb923c;"></i> 
+                    ${name} &nbsp;<small style="color: #94a3b8;">ShadowTrace Exposure Intelligence Engine</small>
+                </h2>
+                <p style="margin-top: 8px; color: #94a3b8;" id="why-this-matters-header">
+                    Loading exposure risk calculations...
+                </p>
+            </div>
+            <div class="col-md-4 text-right">
+                <a href="${docroot}/scaninfo?id=${id}" class="btn btn-default" style="background: #334155; color: #fff; border: none;">
+                    <i class="glyphicon glyphicon-arrow-left"></i> Back to Scan
+                </a>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <span style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Exposure Risk Score</span>
+                    <div class="metric-value" id="total-score-val">--</div>
+                    <small id="risk-tier-badge" class="badge" style="background: #334155;">N/A</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <span style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Resolved Entities</span>
+                    <div class="metric-value" id="entities-count" style="color: #38bdf8;">0</div>
+                    <small style="color: #64748b;">Unique Identifiers</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <span style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Typed Relationships</span>
+                    <div class="metric-value" id="relations-count" style="color: #a855f7;">0</div>
+                    <small style="color: #64748b;">Correlated Links</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <span style="color: #94a3b8; font-size: 12px; text-transform: uppercase;">Top Priority Threats</span>
+                    <div class="metric-value" id="priorities-count" style="color: #f43f5e;">0</div>
+                    <small style="color: #64748b;">Action Items</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Toolbar -->
+    <div class="toolbar-panel">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="margin: 0; color: #94a3b8;">Min Confidence:</label>
+            <input type="range" id="confidence-slider" min="0" max="100" value="0" style="width: 120px;" oninput="updateConfidenceLabel(this.value)">
+            <span id="confidence-val" style="color: #38bdf8; font-weight: bold; width: 35px;">0%</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+            <input type="text" id="entity-search" class="form-control input-sm" placeholder="Search Entity..." style="background: #0f172a; color: #fff; border: 1px solid #334155; width: 200px;" onkeyup="filterGraph()">
+        </div>
+        <div style="margin-left: auto; display: flex; gap: 8px;">
+            <button class="btn btn-sm btn-default" style="background: #334155; color: #fff; border: none;" onclick="resetGraphView()">Reset Zoom</button>
+            <button class="btn btn-sm btn-primary" style="background: #0284c7; border: none;" onclick="exportGraphData()">Export JSON</button>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="row">
+        <!-- Attack Path Graph Canvas -->
+        <div class="col-md-8">
+            <div id="graph-container"></div>
+        </div>
+
+        <!-- Side Inspector Drawer -->
+        <div class="col-md-4">
+            <div class="inspector-panel" id="inspector-panel">
+                <h4 style="margin-top: 0; color: #f8fafc; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                    <i class="glyphicon glyphicon-info-sign"></i> Inspector Drawer
+                </h4>
+                <p style="color: #94a3b8;">Click any node or relationship link in the graph to view confidence score calculation, evidence provenance, and explainable risk breakdown.</p>
+                
+                <div id="inspector-content" style="margin-top: 15px;">
+                    <!-- Default Overview -->
+                    <div id="overall-summary-block">
+                        <h5 style="color: #38bdf8; margin-top: 15px;">Explainable Risk Factors</h5>
+                        <ul id="risk-factors-list" style="padding-left: 20px; color: #cbd5e1;"></ul>
+
+                        <h5 style="color: #fb923c; margin-top: 20px;">Recommended Action Plan</h5>
+                        <div id="remediation-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cytoscape JS Engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
+
+<script>
+var cy = null;
+var rawExposureData = null;
+
+$(document.body).ready(function() {
+    loadExposureData("${id}");
+});
+
+function updateConfidenceLabel(val) {
+    $('#confidence-val').text(val + '%');
+    filterGraph();
+}
+
+function loadExposureData(scanId) {
+    $.getJSON('${docroot}/exposureinfo?id=' + scanId, function(data) {
+        rawExposureData = data;
+        renderHeaderMetrics(data);
+        renderInspectorOverview(data);
+        initCytoscapeGraph(data);
+    });
+}
+
+function renderHeaderMetrics(data) {
+    var summary = data.exposure_summary || {};
+    var score = summary.total_risk_score || 0;
+    $('#total-score-val').text(score + '/100');
+    
+    var tier = summary.risk_tier || 'LOW';
+    var badgeClass = 'score-badge-low';
+    if (score >= 75) badgeClass = 'score-badge-critical';
+    else if (score >= 50) badgeClass = 'score-badge-high';
+    else if (score >= 25) badgeClass = 'score-badge-medium';
+
+    $('#total-score-val').removeClass().addClass('metric-value ' + badgeClass);
+    $('#risk-tier-badge').text(tier).css('background', score >= 50 ? '#ef4444' : '#3b82f6');
+    
+    $('#entities-count').text(data.entities ? data.entities.length : 0);
+    $('#relations-count').text(data.relationships ? data.relationships.length : 0);
+    $('#priorities-count').text(summary.top_priorities ? summary.top_priorities.length : 0);
+    
+    if (summary.why_this_matters) {
+        $('#why-this-matters-header').text(summary.why_this_matters);
+    }
+}
+
+function renderInspectorOverview(data) {
+    var summary = data.exposure_summary || {};
+    var factorsList = $('#risk-factors-list');
+    factorsList.empty();
+
+    if (summary.risk_breakdown && summary.risk_breakdown.length > 0) {
+        summary.risk_breakdown.forEach(function(item) {
+            factorsList.append('<li><strong>+' + item.points + ' pts:</strong> ' + item.factor + '</li>');
+        });
+    } else {
+        factorsList.append('<li>No high-risk factors flagged.</li>');
+    }
+
+    var remList = $('#remediation-list');
+    remList.empty();
+
+    if (summary.remediation_plan && summary.remediation_plan.length > 0) {
+        summary.remediation_plan.forEach(function(rem) {
+            remList.append(
+                '<div class="remediation-box">' +
+                '<span class="badge pull-right" style="background:#ef4444;">' + rem.priority + '</span>' +
+                '<strong style="color:#f8fafc;">Problem:</strong> ' + rem.problem + '<br/>' +
+                '<strong style="color:#38bdf8;">Recommended Action:</strong> ' + rem.recommended_action + '<br/>' +
+                '<small style="color:#94a3b8;">Expected Result: ' + rem.expected_result + '</small>' +
+                '</div>'
+            );
+        });
+    } else {
+        remList.append('<p style="color:#94a3b8;">No remediation steps required.</p>');
+    }
+}
+
+function initCytoscapeGraph(data) {
+    var elements = [];
+
+    // Map Entities to Nodes
+    if (data.entities) {
+        data.entities.forEach(function(e) {
+            var color = '#38bdf8';
+            if (e.type === 'EMAIL') color = '#fb923c';
+            else if (e.type === 'USERNAME') color = '#a855f7';
+            else if (e.type === 'IP') color = '#f43f5e';
+            else if (e.type === 'REPOSITORY') color = '#4ade80';
+            else if (e.type === 'PERSON') color = '#facc15';
+
+            elements.push({
+                data: {
+                    id: e.id,
+                    label: e.value,
+                    type: e.type,
+                    color: color,
+                    risk: e.risk_score
+                }
+            });
+        });
+    }
+
+    // Map Relationships to Edges
+    if (data.relationships) {
+        data.relationships.forEach(function(r) {
+            elements.push({
+                data: {
+                    id: r.id,
+                    source: r.source_entity_id,
+                    target: r.target_entity_id,
+                    label: r.rel_type,
+                    confidence: r.confidence_score,
+                    tier: r.confidence_tier,
+                    reasoning: r.reasoning
+                }
+            });
+        });
+    }
+
+    cy = cytoscape({
+        container: document.getElementById('graph-container'),
+        elements: elements,
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    'background-color': 'data(color)',
+                    'label': 'data(label)',
+                    'color': '#f8fafc',
+                    'font-size': '12px',
+                    'text-valign': 'bottom',
+                    'text-margin-y': 5,
+                    'width': 35,
+                    'height': 35,
+                    'border-width': 2,
+                    'border-color': '#0f172a'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 2,
+                    'line-color': '#475569',
+                    'target-arrow-color': '#475569',
+                    'target-arrow-shape': 'triangle',
+                    'curve-style': 'bezier',
+                    'label': 'data(label)',
+                    'font-size': '10px',
+                    'color': '#94a3b8',
+                    'text-rotation': 'autorotate'
+                }
+            },
+            {
+                selector: ':selected',
+                style: {
+                    'border-width': 4,
+                    'border-color': '#f8fafc',
+                    'line-color': '#38bdf8',
+                    'target-arrow-color': '#38bdf8'
+                }
+            }
+        ],
+        layout: {
+            name: 'cose',
+            animate: false
+        }
+    });
+
+    // Node click handler
+    cy.on('tap', 'node', function(evt) {
+        var node = evt.target;
+        var nodeData = node.data();
+        showNodeInspector(nodeData);
+    });
+
+    // Edge click handler
+    cy.on('tap', 'edge', function(evt) {
+        var edge = evt.target;
+        var edgeData = edge.data();
+        showEdgeInspector(edgeData);
+    });
+}
+
+function showNodeInspector(nData) {
+    var html = '<h4 style="color:#38bdf8;">' + nData.label + '</h4>';
+    html += '<p><strong>Type:</strong> ' + nData.type + '<br/>';
+    html += '<strong>Risk Score:</strong> ' + nData.risk + '/100</p>';
+    
+    // Find matching evidence
+    if (rawExposureData && rawExposureData.evidence) {
+        html += '<h5 style="color:#f8fafc; border-bottom:1px solid #334155; padding-bottom:5px;">Evidence Provenance</h5>';
+        var evCount = 0;
+        rawExposureData.evidence.forEach(function(ev) {
+            html += '<div style="background:#0f172a; padding:8px; margin-bottom:8px; border-radius:4px;">';
+            html += '<span class="badge badge-observed">' + ev.observation_mode + '</span> ';
+            html += '<small style="color:#94a3b8;">Module: ' + ev.source_module + '</small><br/>';
+            html += '<code style="color:#4ade80; font-size:11px;">' + ev.raw_data + '</code>';
+            html += '</div>';
+            evCount++;
+        });
+        if (evCount === 0) html += '<p style="color:#64748b;">No direct raw evidence attached.</p>';
+    }
+
+    $('#inspector-content').html(html);
+}
+
+function showEdgeInspector(eData) {
+    var html = '<h4 style="color:#a855f7;">' + eData.label + '</h4>';
+    html += '<p><strong>Confidence Score:</strong> ' + eData.confidence + '% (' + eData.tier + ')<br/>';
+    html += '<strong>Reasoning Factors:</strong></p>';
+    
+    html += '<ul style="color:#cbd5e1; padding-left:20px;">';
+    if (eData.reasoning && eData.reasoning.length > 0) {
+        eData.reasoning.forEach(function(r) {
+            html += '<li>' + r + '</li>';
+        });
+    } else {
+        html += '<li>Inferred relationship link</li>';
+    }
+    html += '</ul>';
+
+    $('#inspector-content').html(html);
+}
+
+function filterGraph() {
+    if (!cy) return;
+    var minConf = parseInt($('#confidence-slider').val()) || 0;
+    var query = $('#entity-search').val().toLowerCase();
+
+    cy.batch(function() {
+        cy.edges().forEach(function(edge) {
+            if (edge.data('confidence') < minConf) {
+                edge.hide();
+            } else {
+                edge.show();
+            }
+        });
+
+        cy.nodes().forEach(function(node) {
+            var label = node.data('label').toLowerCase();
+            if (query && !label.includes(query)) {
+                node.hide();
+            } else {
+                node.show();
+            }
+        });
+    });
+}
+
+function resetGraphView() {
+    if (cy) {
+        cy.reset();
+        cy.fit();
+    }
+}
+
+function exportGraphData() {
+    if (!rawExposureData) return;
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rawExposureData, null, 2));
+    var dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "Exposure_Intelligence_" + "${id}" + ".json");
+    dlAnchorElem.click();
+}
+</script>
+
+<%include file="FOOTER.tmpl"/>

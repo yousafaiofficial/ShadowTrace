@@ -21,6 +21,7 @@ import dns.resolver
 
 from sflib import SpiderFoot
 from spiderfoot import SpiderFootDb, SpiderFootEvent, SpiderFootPlugin, SpiderFootTarget, SpiderFootHelpers, SpiderFootThreadPool, SpiderFootCorrelator, logger
+from spiderfoot.exposure import ExposureEngine
 
 
 def startSpiderFootScanner(loggingQueue, *args, **kwargs):
@@ -422,6 +423,7 @@ class SpiderFootScanner():
             if not failed:
                 self.__setStatus("FINISHED", None, time.time() * 1000)
                 self.runCorrelations()
+                self.runExposureAnalysis()
                 self.__sf.status(f"Scan [{self.__scanId}] completed.")
             self.__dbh.close()
 
@@ -434,6 +436,15 @@ class SpiderFootScanner():
             ruleset[rule['id']] = rule['rawYaml']
         corr = SpiderFootCorrelator(self.__dbh, ruleset, self.__scanId)
         corr.run_correlations()
+
+    def runExposureAnalysis(self) -> None:
+        """Run Exposure Intelligence Engine analysis."""
+        try:
+            self.__sf.status(f"Running Exposure Intelligence analysis on scan {self.__scanId}.")
+            engine = ExposureEngine(self.__dbh)
+            engine.analyze_scan(self.__scanId)
+        except Exception as e:
+            self.__sf.error(f"Failed to execute Exposure Intelligence analysis on scan {self.__scanId}: {e}")
 
     def waitForThreads(self) -> None:
         """Wait for threads.
