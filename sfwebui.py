@@ -109,17 +109,31 @@ class SpiderFootWebUi:
             .img_src("'self'", "data:")
         )
 
-        secure_headers = secure.Secure(
-            server=secure.Server().set("server"),
-            cache=secure.CacheControl().must_revalidate(),
-            csp=csp,
-            referrer=secure.ReferrerPolicy().no_referrer(),
-        )
+        try:
+            secure_headers = secure.Secure(
+                server=secure.Server().set("server"),
+                cache=secure.CacheControl().must_revalidate(),
+                csp=csp,
+                referrer=secure.ReferrerPolicy().no_referrer(),
+            )
 
-        cherrypy.config.update({
-            "tools.response_headers.on": True,
-            "tools.response_headers.headers": secure_headers.framework.cherrypy()
-        })
+            headers_dict = {}
+            if hasattr(secure_headers, "framework") and hasattr(secure_headers.framework, "cherrypy"):
+                headers_dict = secure_headers.framework.cherrypy()
+            elif hasattr(secure_headers, "headers"):
+                headers_raw = secure_headers.headers() if callable(secure_headers.headers) else secure_headers.headers
+                if isinstance(headers_raw, list):
+                    headers_dict = {h.key: h.value for h in headers_raw if hasattr(h, 'key') and hasattr(h, 'value')}
+                elif isinstance(headers_raw, dict):
+                    headers_dict = headers_raw
+
+            if headers_dict:
+                cherrypy.config.update({
+                    "tools.response_headers.on": True,
+                    "tools.response_headers.headers": headers_dict
+                })
+        except Exception as e:
+            self.log.warning(f"Could not set secure headers: {e}")
 
     def error_page(self: 'SpiderFootWebUi') -> None:
         """Error page."""
