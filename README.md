@@ -1,10 +1,50 @@
 # ShadowTrace - Security Exposure Intelligence & Analysis Platform
 
-**ShadowTrace** is an Exposure Intelligence Engine built on top of SpiderFoot's OSINT collection framework. Instead of merely collecting raw OSINT events, **ShadowTrace** correlates findings into high-level entities, calculates normalized relationship confidence scores, tracks data provenance, and provides explainable risk scoring with actionable remediation plans.
+**ShadowTrace** is a Security Exposure Intelligence Engine built on top of an OSINT collection framework. Instead of merely collecting raw OSINT events, **ShadowTrace** correlates findings into high-level entities, calculates normalized relationship confidence scores, tracks data provenance, and provides explainable risk scoring with actionable remediation plans.
 
 ---
 
-### Key Capabilities in ShadowTrace V1
+### 🚀 Quick Start with Docker (Recommended)
+
+Run **ShadowTrace** instantly using Docker:
+
+```bash
+# 1. Clone Repository
+git clone https://github.com/yousafaiofficial/ShadowTrace.git
+cd ShadowTrace
+
+# 2. Build Docker Container
+docker build -t shadowtrace .
+
+# 3. Run ShadowTrace Container
+docker run -p 5001:5001 shadowtrace
+```
+
+Open your web browser and navigate to **`http://localhost:5001`**.
+
+---
+
+### 💻 Quick Start with Python (Linux / Kali Linux)
+
+```bash
+# 1. Clone & Enter Directory
+git clone https://github.com/yousafaiofficial/ShadowTrace.git
+cd ShadowTrace
+
+# 2. Set Up Virtual Environment & Dependencies
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Launch ShadowTrace Web UI
+python3 sf.py -l 127.0.0.1:5001
+```
+
+Open your web browser and navigate to **`http://127.0.0.1:5001`**.
+
+---
+
+### 🛡️ Key Capabilities in ShadowTrace V1
 
 1. **Exposure Intelligence Engine**: Resolves raw events into 10 core entity classes (`Person`, `Email`, `Username`, `Domain`, `IP`, `Organization`, `Repository`, `Document`, `Certificate`, `Social Account`).
 2. **Confidence Engine**: Scores relationships with weighted criteria (+40 exact email match, +20 domain match) and maps them into 4 confidence tiers (`Weak`, `Possible`, `Strong`, `Very Strong`).

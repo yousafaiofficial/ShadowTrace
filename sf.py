@@ -575,7 +575,7 @@ def start_web_server(sfWebUiConfig: dict, sfConfig: dict, loggingQueue=None) -> 
 
     print("")
     print("*************************************************************")
-    print(" Use SpiderFoot by starting your web browser of choice and ")
+    print(" Use ShadowTrace by starting your web browser of choice and ")
     print(f" browse to {url}")
     print("*************************************************************")
     print("")
@@ -606,11 +606,11 @@ def handle_abort(signal, frame) -> None:
 
 if __name__ == '__main__':
     if sys.version_info < (3, 7):
-        print("SpiderFoot requires Python 3.7 or higher.")
+        print("ShadowTrace requires Python 3.7 or higher.")
         sys.exit(-1)
 
     if len(sys.argv) <= 1:
-        print("SpiderFoot requires -l <ip>:<port> to start the web server. Try --help for guidance.")
+        print("ShadowTrace requires -l <ip>:<port> to start the web server. Try --help for guidance.")
         sys.exit(-1)
 
     # TODO: remove this after a few releases (added in 3.5 pre-release 2021-09-05)
