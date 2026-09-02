@@ -11,10 +11,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_stevenblack_hosts(SpiderFootPlugin):
+class sfp_stevenblack_hosts(ShadowTracePlugin):
 
     meta = {
         'name': "Steven Black Hosts",
@@ -178,10 +178,10 @@ class sfp_stevenblack_hosts(SpiderFootPlugin):
         url = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
         text = f"Steven Black Hosts Blocklist [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_stevenblack_hosts class

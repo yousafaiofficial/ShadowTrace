@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_ipapicom
-# Purpose:      SpiderFoot plug-in to identify the Geo-location of IP addresses
+# Purpose:      ShadowTrace plug-in to identify the Geo-location of IP addresses
 #               identified by other modules using ipapi.com
 #
 # Author:      Krishnasis Mandal <krishnasis@hotmail.com>
@@ -14,10 +14,10 @@
 import json
 import time
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_ipapicom(SpiderFootPlugin):
+class sfp_ipapicom(ShadowTracePlugin):
 
     meta = {
         'name': "ipapi.com",
@@ -130,14 +130,14 @@ class sfp_ipapicom(SpiderFootPlugin):
 
         if data.get('country_name'):
             location = ', '.join(filter(None, [data.get('city'), data.get('region_name'), data.get('region_code'), data.get('country_name'), data.get('country_code')]))
-            evt = SpiderFootEvent('GEOINFO', location, self.__name__, event)
+            evt = ShadowTraceEvent('GEOINFO', location, self.__name__, event)
             self.notifyListeners(evt)
 
             if data.get('latitude') and data.get('longitude'):
-                evt = SpiderFootEvent("PHYSICAL_COORDINATES", f"{data.get('latitude')}, {data.get('longitude')}", self.__name__, event)
+                evt = ShadowTraceEvent("PHYSICAL_COORDINATES", f"{data.get('latitude')}, {data.get('longitude')}", self.__name__, event)
                 self.notifyListeners(evt)
 
-            evt = SpiderFootEvent('RAW_RIR_DATA', str(data), self.__name__, event)
+            evt = ShadowTraceEvent('RAW_RIR_DATA', str(data), self.__name__, event)
             self.notifyListeners(evt)
 
 

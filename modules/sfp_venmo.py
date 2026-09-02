@@ -12,10 +12,10 @@
 import json
 import time
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_venmo(SpiderFootPlugin):
+class sfp_venmo(ShadowTracePlugin):
 
     meta = {
         'name': "Venmo",
@@ -109,10 +109,10 @@ class sfp_venmo(SpiderFootPlugin):
             display_name = data['first_name'] + " " + data['last_name']
 
         if display_name:
-            evt = SpiderFootEvent('HUMAN_NAME', display_name, self.__name__, event)
+            evt = ShadowTraceEvent('HUMAN_NAME', display_name, self.__name__, event)
             self.notifyListeners(evt)
 
-            evt = SpiderFootEvent('RAW_RIR_DATA', str(data),
+            evt = ShadowTraceEvent('RAW_RIR_DATA', str(data),
                                   self.__name__, event)
             self.notifyListeners(evt)
 

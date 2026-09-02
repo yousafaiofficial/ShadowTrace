@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_stor_stdout
-# Purpose:      SpiderFoot plug-in for dumping events to standard output.
+# Purpose:      ShadowTrace plug-in for dumping events to standard output.
 #
 # Author:      Steve Micallef <steve@binarypool.com>
 #
@@ -12,14 +12,14 @@
 
 import json
 
-from spiderfoot import SpiderFootPlugin
+from shadowtrace import ShadowTracePlugin
 
 
-class sfp__stor_stdout(SpiderFootPlugin):
+class sfp__stor_stdout(ShadowTracePlugin):
 
     meta = {
         'name': "Command-line output",
-        'summary': "Dumps output to standard out. Used for when a SpiderFoot scan is run via the command-line."
+        'summary': "Dumps output to standard out. Used for when a ShadowTrace scan is run via the command-line."
     }
 
     _priority = 0

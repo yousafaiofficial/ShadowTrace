@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_skymem
-# Purpose:      SpiderFoot plug-in for retrieving up to 100 e-mail addresses
+# Purpose:      ShadowTrace plug-in for retrieving up to 100 e-mail addresses
 #               belonging to your target from Skymem.
 #
 # Author:      <bcoles@gmail.com>
@@ -13,10 +13,10 @@
 
 import re
 
-from spiderfoot import SpiderFootEvent, SpiderFootHelpers, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTraceHelpers, ShadowTracePlugin
 
 
-class sfp_skymem(SpiderFootPlugin):
+class sfp_skymem(ShadowTracePlugin):
 
     meta = {
         'name': "Skymem",
@@ -83,7 +83,7 @@ class sfp_skymem(SpiderFootPlugin):
             return
 
         # Extract emails from results page
-        emails = SpiderFootHelpers.extractEmailsFromText(res['content'])
+        emails = ShadowTraceHelpers.extractEmailsFromText(res['content'])
 
         for email in emails:
             # Skip unrelated emails
@@ -98,7 +98,7 @@ class sfp_skymem(SpiderFootPlugin):
                     evttype = "EMAILADDR_GENERIC"
                 else:
                     evttype = "EMAILADDR"
-                evt = SpiderFootEvent(evttype, email, self.__name__, event)
+                evt = ShadowTraceEvent(evttype, email, self.__name__, event)
                 self.notifyListeners(evt)
                 self.results[email] = True
 
@@ -120,7 +120,7 @@ class sfp_skymem(SpiderFootPlugin):
             if res['content'] is None:
                 break
 
-            emails = SpiderFootHelpers.extractEmailsFromText(res['content'])
+            emails = ShadowTraceHelpers.extractEmailsFromText(res['content'])
             for email in emails:
                 # Skip unrelated emails
                 mailDom = email.lower().split('@')[1]
@@ -134,7 +134,7 @@ class sfp_skymem(SpiderFootPlugin):
                         evttype = "EMAILADDR_GENERIC"
                     else:
                         evttype = "EMAILADDR"
-                    evt = SpiderFootEvent(evttype, email, self.__name__, event)
+                    evt = ShadowTraceEvent(evttype, email, self.__name__, event)
                     self.notifyListeners(evt)
                     self.results[email] = True
 

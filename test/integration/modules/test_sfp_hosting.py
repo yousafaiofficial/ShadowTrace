@@ -2,8 +2,8 @@ import pytest
 import unittest
 
 from modules.sfp_hosting import sfp_hosting
-from sflib import SpiderFoot
-from spiderfoot import SpiderFootEvent, SpiderFootTarget
+from sflib import ShadowTrace
+from shadowtrace import ShadowTraceEvent, ShadowTraceTarget
 
 
 @pytest.mark.usefixtures
@@ -11,14 +11,14 @@ class TestModuleIntegrationHosting(unittest.TestCase):
 
     @unittest.skip("todo")
     def test_handleEvent_event_data_ip_address_hosted_should_return_event(self):
-        sf = SpiderFoot(self.default_options)
+        sf = ShadowTrace(self.default_options)
 
         module = sfp_hosting()
         module.setup(sf, dict())
 
-        target_value = 'spiderfoot.net'
+        target_value = 'shadowtrace.net'
         target_type = 'INTERNET_NAME'
-        target = SpiderFootTarget(target_value, target_type)
+        target = ShadowTraceTarget(target_value, target_type)
         module.setTarget(target)
 
         def new_notifyListeners(self, event):
@@ -39,7 +39,7 @@ class TestModuleIntegrationHosting(unittest.TestCase):
         event_module = ''
         source_event = ''
 
-        evt = SpiderFootEvent(event_type, event_data, event_module, source_event)
+        evt = ShadowTraceEvent(event_type, event_data, event_module, source_event)
 
         with self.assertRaises(Exception) as cm:
             module.handleEvent(evt)
@@ -48,14 +48,14 @@ class TestModuleIntegrationHosting(unittest.TestCase):
 
     @unittest.skip("todo")
     def test_handleEvent_event_data_ip_address_not_hosted_should_not_return_event(self):
-        sf = SpiderFoot(self.default_options)
+        sf = ShadowTrace(self.default_options)
 
         module = sfp_hosting()
         module.setup(sf, dict())
 
-        target_value = 'spiderfoot.net'
+        target_value = 'shadowtrace.net'
         target_type = 'INTERNET_NAME'
-        target = SpiderFootTarget(target_value, target_type)
+        target = ShadowTraceTarget(target_value, target_type)
         module.setTarget(target)
 
         def new_notifyListeners(self, event):
@@ -68,7 +68,7 @@ class TestModuleIntegrationHosting(unittest.TestCase):
         event_module = ''
         source_event = ''
 
-        evt = SpiderFootEvent(event_type, event_data, event_module, source_event)
+        evt = ShadowTraceEvent(event_type, event_data, event_module, source_event)
         result = module.handleEvent(evt)
 
         self.assertIsNone(result)

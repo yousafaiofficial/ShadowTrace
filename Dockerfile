@@ -34,4 +34,4 @@ EXPOSE 5001
 
 # Default execution: Launch ShadowTrace Web UI on port 5001
 ENTRYPOINT ["python3"]
-CMD ["sf.py", "-l", "0.0.0.0:5001"]
+CMD ["st.py", "-l", "0.0.0.0:5001"]

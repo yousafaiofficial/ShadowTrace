@@ -12,10 +12,10 @@
 
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_bingsharedip(SpiderFootPlugin):
+class sfp_bingsharedip(ShadowTracePlugin):
 
     meta = {
         'name': "Bing (Shared IPs)",
@@ -161,14 +161,14 @@ class sfp_bingsharedip(SpiderFootPlugin):
                     # Create an IP Address event stemming from the netblock as the
                     # link to the co-host.
                     if eventName == "NETBLOCK_OWNER":
-                        ipe = SpiderFootEvent("IP_ADDRESS", ip, self.__name__, event)
+                        ipe = ShadowTraceEvent("IP_ADDRESS", ip, self.__name__, event)
                         self.notifyListeners(ipe)
-                        evt = SpiderFootEvent(
+                        evt = ShadowTraceEvent(
                             "CO_HOSTED_SITE", site, self.__name__, ipe
                         )
                         self.notifyListeners(evt)
                     else:
-                        evt = SpiderFootEvent(
+                        evt = ShadowTraceEvent(
                             "CO_HOSTED_SITE", site, self.__name__, event
                         )
                         self.notifyListeners(evt)
@@ -176,7 +176,7 @@ class sfp_bingsharedip(SpiderFootPlugin):
                     myres.append(site)
 
             if urls:
-                evt = SpiderFootEvent(
+                evt = ShadowTraceEvent(
                     "RAW_RIR_DATA", str(res), self.__name__, event
                 )
                 self.notifyListeners(evt)

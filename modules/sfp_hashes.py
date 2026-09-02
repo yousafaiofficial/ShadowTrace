@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_hashes
-# Purpose:      SpiderFoot plug-in for scanning retrieved content by other
+# Purpose:      ShadowTrace plug-in for scanning retrieved content by other
 #               modules (such as sfp_spider) and identifying hashes
 #
 # Author:      Steve Micallef <steve@binarypool.com>
@@ -11,10 +11,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootHelpers, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTraceHelpers, ShadowTracePlugin
 
 
-class sfp_hashes(SpiderFootPlugin):
+class sfp_hashes(ShadowTracePlugin):
 
     meta = {
         'name': "Hash Extractor",
@@ -59,11 +59,11 @@ class sfp_hashes(SpiderFootPlugin):
 
         self.debug(f"Received event, {eventName}, from {srcModuleName}")
 
-        hashes = SpiderFootHelpers.extractHashesFromText(eventData)
+        hashes = ShadowTraceHelpers.extractHashesFromText(eventData)
         for hashtup in hashes:
             hashalgo, hashval = hashtup
 
-            evt = SpiderFootEvent("HASH", f"[{hashalgo}] {hashval}", self.__name__, event)
+            evt = ShadowTraceEvent("HASH", f"[{hashalgo}] {hashval}", self.__name__, event)
             if event.moduleDataSource:
                 evt.moduleDataSource = event.moduleDataSource
             else:

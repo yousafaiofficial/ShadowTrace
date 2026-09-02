@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_spamcop
-# Purpose:      SpiderFoot plug-in for looking up whether IPs/Netblocks/Domains
+# Purpose:      ShadowTrace plug-in for looking up whether IPs/Netblocks/Domains
 #               appear in the spamcop block lists, indicating potential open-relays,
 #               open proxies, malicious servers, vulnerable servers, etc.
 #
@@ -14,10 +14,10 @@
 
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_spamcop(SpiderFootPlugin):
+class sfp_spamcop(ShadowTracePlugin):
 
     meta = {
         'name': "SpamCop",
@@ -188,10 +188,10 @@ class sfp_spamcop(SpiderFootPlugin):
                 url = f"https://www.spamcop.net/w3m?action=checkblock&ip={addr}"
                 description = f"SpamCop Blacklist [{addr}]\n<SFURL>{url}</SFURL>"
 
-                evt = SpiderFootEvent(blacklist_type, description, self.__name__, event)
+                evt = ShadowTraceEvent(blacklist_type, description, self.__name__, event)
                 self.notifyListeners(evt)
 
-                evt = SpiderFootEvent(malicious_type, description, self.__name__, event)
+                evt = ShadowTraceEvent(malicious_type, description, self.__name__, event)
                 self.notifyListeners(evt)
 
 # End of sfp_spamcop class

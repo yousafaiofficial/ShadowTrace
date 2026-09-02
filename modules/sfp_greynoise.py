@@ -17,10 +17,10 @@ import time
 from datetime import datetime
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_greynoise(SpiderFootPlugin):
+class sfp_greynoise(ShadowTracePlugin):
 
     meta = {
         "name": "GreyNoise",
@@ -117,7 +117,7 @@ class sfp_greynoise(SpiderFootPlugin):
             ip_response = self.sf.fetchUrl(
                 gn_context_url + qry,
                 timeout=self.opts["_fetchtimeout"],
-                useragent="greynoise-spiderfoot-v1.2.0",
+                useragent="greynoise-shadowtrace-v1.2.0",
                 headers=headers,
             )
             if ip_response["code"] == "200":
@@ -127,7 +127,7 @@ class sfp_greynoise(SpiderFootPlugin):
             query_response = self.sf.fetchUrl(
                 gn_gnql_url + qry,
                 timeout=self.opts["_fetchtimeout"],
-                useragent="greynoise-spiderfoot-v1.1.0",
+                useragent="greynoise-shadowtrace-v1.1.0",
                 headers=headers,
             )
             if query_response["code"] == "200":
@@ -218,19 +218,19 @@ class sfp_greynoise(SpiderFootPlugin):
                             if met.get("city"):
                                 loc = met.get("city") + ", "
                             loc += met.get("country")
-                            e = SpiderFootEvent("GEOINFO", loc, self.__name__, event)
+                            e = ShadowTraceEvent("GEOINFO", loc, self.__name__, event)
                             self.notifyListeners(e)
                         if met.get("asn", "unknown") != "unknown":
                             asn = met.get("asn").replace("AS", "")
-                            e = SpiderFootEvent("BGP_AS_MEMBER", asn, self.__name__, event)
+                            e = ShadowTraceEvent("BGP_AS_MEMBER", asn, self.__name__, event)
                             self.notifyListeners(e)
                         if met.get("organization", "unknown") != "unknown":
-                            e = SpiderFootEvent("COMPANY_NAME", met.get("organization"), self.__name__, event)
+                            e = ShadowTraceEvent("COMPANY_NAME", met.get("organization"), self.__name__, event)
                             self.notifyListeners(e)
                         if met.get("os", "unknown") != "unknown":
-                            e = SpiderFootEvent("OPERATING_SYSTEM", met.get("os"), self.__name__, event)
+                            e = ShadowTraceEvent("OPERATING_SYSTEM", met.get("os"), self.__name__, event)
                             self.notifyListeners(e)
-                        e = SpiderFootEvent("RAW_RIR_DATA", str(rec), self.__name__, event)
+                        e = ShadowTraceEvent("RAW_RIR_DATA", str(rec), self.__name__, event)
                         self.notifyListeners(e)
 
                     if rec.get("classification"):
@@ -247,7 +247,7 @@ class sfp_greynoise(SpiderFootPlugin):
                         if rec.get("raw_data") and not (rec.get("tags") or ret.get("cve")):
                             descr += "\n - " + "Raw data: " + str(rec.get("raw_data"))
                         descr += "\n<SFURL>https://viz.greynoise.io/ip/" + rec.get("ip") + "</SFURL>"
-                        e = SpiderFootEvent(evtType, descr, self.__name__, event)
+                        e = ShadowTraceEvent(evtType, descr, self.__name__, event)
                         self.notifyListeners(e)
 
         if "seen" in ret:
@@ -268,19 +268,19 @@ class sfp_greynoise(SpiderFootPlugin):
                         if met.get("city"):
                             loc = met.get("city") + ", "
                         loc += met.get("country")
-                        e = SpiderFootEvent("GEOINFO", loc, self.__name__, event)
+                        e = ShadowTraceEvent("GEOINFO", loc, self.__name__, event)
                         self.notifyListeners(e)
                     if met.get("asn", "unknown") != "unknown":
                         asn = met.get("asn").replace("AS", "")
-                        e = SpiderFootEvent("BGP_AS_MEMBER", asn, self.__name__, event)
+                        e = ShadowTraceEvent("BGP_AS_MEMBER", asn, self.__name__, event)
                         self.notifyListeners(e)
                     if met.get("organization", "unknown") != "unknown":
-                        e = SpiderFootEvent("COMPANY_NAME", met.get("organization"), self.__name__, event)
+                        e = ShadowTraceEvent("COMPANY_NAME", met.get("organization"), self.__name__, event)
                         self.notifyListeners(e)
                     if met.get("os", "unknown") != "unknown":
-                        e = SpiderFootEvent("OPERATING_SYSTEM", met.get("os"), self.__name__, event)
+                        e = ShadowTraceEvent("OPERATING_SYSTEM", met.get("os"), self.__name__, event)
                         self.notifyListeners(e)
-                    e = SpiderFootEvent("RAW_RIR_DATA", str(ret), self.__name__, event)
+                    e = ShadowTraceEvent("RAW_RIR_DATA", str(ret), self.__name__, event)
                     self.notifyListeners(e)
 
                 if ret.get("classification"):
@@ -297,7 +297,7 @@ class sfp_greynoise(SpiderFootPlugin):
                     if ret.get("raw_data") and not (ret.get("tags") or ret.get("cve")):
                         descr += "\n - " + "Raw data: " + str(ret.get("raw_data"))
                     descr += "\n<SFURL>https://viz.greynoise.io/ip/" + ret.get("ip") + "</SFURL>"
-                    e = SpiderFootEvent(evtType, descr, self.__name__, event)
+                    e = ShadowTraceEvent(evtType, descr, self.__name__, event)
                     self.notifyListeners(e)
 
 # End of sfp_greynoise class

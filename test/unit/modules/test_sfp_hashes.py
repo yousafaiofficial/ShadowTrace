@@ -2,8 +2,8 @@ import pytest
 import unittest
 
 from modules.sfp_hashes import sfp_hashes
-from sflib import SpiderFoot
-from spiderfoot import SpiderFootEvent, SpiderFootTarget
+from sflib import ShadowTrace
+from shadowtrace import ShadowTraceEvent, ShadowTraceTarget
 
 
 @pytest.mark.usefixtures
@@ -14,7 +14,7 @@ class TestModuleHashes(unittest.TestCase):
         self.assertEqual(len(module.opts), len(module.optdescs))
 
     def test_setup(self):
-        sf = SpiderFoot(self.default_options)
+        sf = ShadowTrace(self.default_options)
         module = sfp_hashes()
         module.setup(sf, dict())
 
@@ -27,14 +27,14 @@ class TestModuleHashes(unittest.TestCase):
         self.assertIsInstance(module.producedEvents(), list)
 
     def test_handleEvent_event_data_containing_hashes_string_should_return_event(self):
-        sf = SpiderFoot(self.default_options)
+        sf = ShadowTrace(self.default_options)
 
         module = sfp_hashes()
         module.setup(sf, dict())
 
-        target_value = 'spiderfoot.net'
+        target_value = 'shadowtrace.net'
         target_type = 'INTERNET_NAME'
-        target = SpiderFootTarget(target_value, target_type)
+        target = ShadowTraceTarget(target_value, target_type)
         module.setTarget(target)
 
         def new_notifyListeners(self, event):
@@ -55,7 +55,7 @@ class TestModuleHashes(unittest.TestCase):
         event_module = ''
         source_event = ''
 
-        evt = SpiderFootEvent(event_type, event_data, event_module, source_event)
+        evt = ShadowTraceEvent(event_type, event_data, event_module, source_event)
 
         with self.assertRaises(Exception) as cm:
             module.handleEvent(evt)
@@ -63,14 +63,14 @@ class TestModuleHashes(unittest.TestCase):
         self.assertEqual("OK", str(cm.exception))
 
     def test_handleEvent_event_data_not_containing_hashes_string_should_not_return_event(self):
-        sf = SpiderFoot(self.default_options)
+        sf = ShadowTrace(self.default_options)
 
         module = sfp_hashes()
         module.setup(sf, dict())
 
-        target_value = 'spiderfoot.net'
+        target_value = 'shadowtrace.net'
         target_type = 'INTERNET_NAME'
-        target = SpiderFootTarget(target_value, target_type)
+        target = ShadowTraceTarget(target_value, target_type)
         module.setTarget(target)
 
         def new_notifyListeners(self, event):
@@ -83,7 +83,7 @@ class TestModuleHashes(unittest.TestCase):
         event_module = ''
         source_event = ''
 
-        evt = SpiderFootEvent(event_type, event_data, event_module, source_event)
+        evt = ShadowTraceEvent(event_type, event_data, event_module, source_event)
         result = module.handleEvent(evt)
 
         self.assertIsNone(result)

@@ -10,10 +10,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_googlesearch(SpiderFootPlugin):
+class sfp_googlesearch(ShadowTracePlugin):
 
     meta = {
         'name': "Google",
@@ -127,11 +127,11 @@ class sfp_googlesearch(SpiderFootPlugin):
         for link in internal_links:
             self.debug("Found a link: " + link)
 
-            evt = SpiderFootEvent("LINKED_URL_INTERNAL", link, self.__name__, event)
+            evt = ShadowTraceEvent("LINKED_URL_INTERNAL", link, self.__name__, event)
             self.notifyListeners(evt)
 
         if internal_links:
-            evt = SpiderFootEvent(
+            evt = ShadowTraceEvent(
                 "RAW_RIR_DATA", str(res), self.__name__, event
             )
             self.notifyListeners(evt)

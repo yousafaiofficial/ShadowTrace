@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:        sfp_phishstats
-# Purpose:     Spiderfoot plugin to search PhishStats API
+# Purpose:     Shadowtrace plugin to search PhishStats API
 #              to determine if an IP is malicious.
 #
 # Author:      Krishnasis Mandal <krishnasis@hotmail.com>
@@ -18,10 +18,10 @@ import urllib.request
 
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_phishstats(SpiderFootPlugin):
+class sfp_phishstats(ShadowTracePlugin):
 
     meta = {
         'name': "PhishStats",
@@ -201,23 +201,23 @@ class sfp_phishstats(SpiderFootPlugin):
             # For netblocks, we need to create the IP address event so that
             # the threat intel event is more meaningful.
             if eventName == 'NETBLOCK_OWNER':
-                pevent = SpiderFootEvent("IP_ADDRESS", addr, self.__name__, event)
+                pevent = ShadowTraceEvent("IP_ADDRESS", addr, self.__name__, event)
                 self.notifyListeners(pevent)
             elif eventName == 'NETBLOCK_MEMBER':
-                pevent = SpiderFootEvent("AFFILIATE_IPADDR", addr, self.__name__, event)
+                pevent = ShadowTraceEvent("AFFILIATE_IPADDR", addr, self.__name__, event)
                 self.notifyListeners(pevent)
             else:
                 pevent = event
 
-            evt = SpiderFootEvent("RAW_RIR_DATA", str(data), self.__name__, pevent)
+            evt = ShadowTraceEvent("RAW_RIR_DATA", str(data), self.__name__, pevent)
             self.notifyListeners(evt)
 
             text = f"PhishStats [{addr}]"
 
-            evt = SpiderFootEvent(blacklist_type, text, self.__name__, pevent)
+            evt = ShadowTraceEvent(blacklist_type, text, self.__name__, pevent)
             self.notifyListeners(evt)
 
-            evt = SpiderFootEvent(malicious_type, text, self.__name__, pevent)
+            evt = ShadowTraceEvent(malicious_type, text, self.__name__, pevent)
             self.notifyListeners(evt)
 
 # End of sfp_phishstats class

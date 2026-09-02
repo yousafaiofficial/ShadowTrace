@@ -10,10 +10,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_vxvault(SpiderFootPlugin):
+class sfp_vxvault(ShadowTracePlugin):
 
     meta = {
         'name': "VXVault.net",
@@ -196,7 +196,7 @@ class sfp_vxvault(SpiderFootPlugin):
         if self.queryBlacklist(eventData):
             url = "http://vxvault.net/URL_List.php"
             text = f"VXVault Malicious URL List [{eventData}]\n<SFURL>{url}</SFURL>"
-            evt = SpiderFootEvent(evtType, text, self.__name__, event)
+            evt = ShadowTraceEvent(evtType, text, self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_vxvault class

@@ -11,10 +11,10 @@
 
 import re
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_myspace(SpiderFootPlugin):
+class sfp_myspace(ShadowTracePlugin):
 
     meta = {
         'name': "MySpace",
@@ -105,7 +105,7 @@ class sfp_myspace(SpiderFootPlugin):
                 return
 
             name = matches[0]
-            e = SpiderFootEvent(
+            e = ShadowTraceEvent(
                 "SOCIAL_MEDIA",
                 f"MySpace: <SFURL>https://myspace.com/{name}</SFURL>",
                 self.__name__,
@@ -143,7 +143,7 @@ class sfp_myspace(SpiderFootPlugin):
                 self.debug("Skipping likely invalid location.")
                 return
 
-            e = SpiderFootEvent("GEOINFO", location, self.__name__, event)
+            e = ShadowTraceEvent("GEOINFO", location, self.__name__, event)
             self.notifyListeners(e)
 
 # End of sfp_myspace class

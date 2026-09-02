@@ -13,10 +13,10 @@
 import json
 import time
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_fsecure_riddler(SpiderFootPlugin):
+class sfp_fsecure_riddler(ShadowTracePlugin):
 
     meta = {
         'name': "F-Secure Riddler.io",
@@ -201,7 +201,7 @@ class sfp_fsecure_riddler(SpiderFootPlugin):
             self.info(f"No results found for {eventData}")
             return
 
-        e = SpiderFootEvent('RAW_RIR_DATA', str(data), self.__name__, event)
+        e = ShadowTraceEvent('RAW_RIR_DATA', str(data), self.__name__, event)
         self.notifyListeners(e)
 
         hosts = list()
@@ -242,24 +242,24 @@ class sfp_fsecure_riddler(SpiderFootPlugin):
                 self.debug(f"Host {host} could not be resolved")
                 evt_type += '_UNRESOLVED'
 
-            evt = SpiderFootEvent(evt_type, host, self.__name__, event)
+            evt = ShadowTraceEvent(evt_type, host, self.__name__, event)
             self.notifyListeners(evt)
 
             if self.sf.isDomain(host, self.opts['_internettlds']):
                 if evt_type.startswith('AFFILIATE'):
-                    evt = SpiderFootEvent('AFFILIATE_DOMAIN_NAME', host, self.__name__, event)
+                    evt = ShadowTraceEvent('AFFILIATE_DOMAIN_NAME', host, self.__name__, event)
                     self.notifyListeners(evt)
                 else:
-                    evt = SpiderFootEvent('DOMAIN_NAME', host, self.__name__, event)
+                    evt = ShadowTraceEvent('DOMAIN_NAME', host, self.__name__, event)
                     self.notifyListeners(evt)
 
         for addr in set(addrs):
             if self.sf.validIP(addr):
-                evt = SpiderFootEvent('IP_ADDRESS', addr, self.__name__, event)
+                evt = ShadowTraceEvent('IP_ADDRESS', addr, self.__name__, event)
                 self.notifyListeners(evt)
 
         for coord in set(coords):
-            evt = SpiderFootEvent('PHYSICAL_COORDINATES', coord, self.__name__, event)
+            evt = ShadowTraceEvent('PHYSICAL_COORDINATES', coord, self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_fsecure_riddler class

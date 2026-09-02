@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_textmagic
-# Purpose:      Spiderfoot module to retrieve phone number type
+# Purpose:      Shadowtrace module to retrieve phone number type
 #               using TextMagic API
 #
 # Author:      Krishnasis Mandal <krishnasis@hotmail.com>
@@ -12,10 +12,10 @@
 # -------------------------------------------------------------------------------
 import json
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_textmagic(SpiderFootPlugin):
+class sfp_textmagic(ShadowTracePlugin):
 
     meta = {
         "name": "TextMagic",
@@ -98,7 +98,7 @@ class sfp_textmagic(SpiderFootPlugin):
             f"https://rest.textmagic.com/api/v2/lookups/{qry}",
             headers=headers,
             timeout=self.opts["_fetchtimeout"],
-            useragent="SpiderFoot",
+            useragent="ShadowTrace",
         )
 
         if res["code"] != "200":
@@ -142,10 +142,10 @@ class sfp_textmagic(SpiderFootPlugin):
 
         phoneNumberType = data.get("type")
         if phoneNumberType is not None:
-            evt = SpiderFootEvent("RAW_RIR_DATA", str(data), self.__name__, event)
+            evt = ShadowTraceEvent("RAW_RIR_DATA", str(data), self.__name__, event)
             self.notifyListeners(evt)
 
-            evt = SpiderFootEvent("PHONE_NUMBER_TYPE", phoneNumberType, self.__name__, event)
+            evt = ShadowTraceEvent("PHONE_NUMBER_TYPE", phoneNumberType, self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_textmagic class

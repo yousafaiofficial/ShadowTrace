@@ -13,10 +13,10 @@
 
 from netaddr import IPAddress, IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_talosintel(SpiderFootPlugin):
+class sfp_talosintel(ShadowTracePlugin):
 
     meta = {
         'name': "Talos Intelligence",
@@ -212,10 +212,10 @@ class sfp_talosintel(SpiderFootPlugin):
         url = "https://snort.org/downloads/ip-block-list"
         text = f"Talos Intelligence [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_talosintel class

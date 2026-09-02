@@ -13,10 +13,10 @@
 
 from netaddr import IPAddress, IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_alienvaultiprep(SpiderFootPlugin):
+class sfp_alienvaultiprep(ShadowTracePlugin):
 
     meta = {
         'name': "AlienVault IP Reputation",
@@ -206,10 +206,10 @@ class sfp_alienvaultiprep(SpiderFootPlugin):
         url = "https://reputation.alienvault.com/reputation.generic"
         text = f"AlienVault IP Reputation Database [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_alienvaultiprep class

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_crt
-# Purpose:      SpiderFoot plug-in to identify historical certificates for a domain
+# Purpose:      ShadowTrace plug-in to identify historical certificates for a domain
 #               from crt.sh, and from this identify hostnames.
 #
 # Author:      Steve Micallef <steve@binarypool.com>
@@ -15,10 +15,10 @@ import json
 import time
 import urllib.parse
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_crt(SpiderFootPlugin):
+class sfp_crt(ShadowTracePlugin):
 
     meta = {
         'name': "Certificate Transparency",
@@ -145,7 +145,7 @@ class sfp_crt(SpiderFootPlugin):
             self.debug(f"No certificate transparency results for domain {event.data}")
             return
 
-        evt = SpiderFootEvent("RAW_RIR_DATA", str(data), self.__name__, event)
+        evt = ShadowTraceEvent("RAW_RIR_DATA", str(data), self.__name__, event)
         self.notifyListeners(evt)
 
         domains = list()
@@ -213,7 +213,7 @@ class sfp_crt(SpiderFootPlugin):
             cert_text = cert.get('text')
 
             if cert_text:
-                evt = SpiderFootEvent("SSL_CERTIFICATE_RAW", str(cert_text), self.__name__, event)
+                evt = ShadowTraceEvent("SSL_CERTIFICATE_RAW", str(cert_text), self.__name__, event)
                 self.notifyListeners(evt)
 
             sans = cert.get('altnames', list())
@@ -244,15 +244,15 @@ class sfp_crt(SpiderFootPlugin):
             else:
                 evt_type = 'CO_HOSTED_SITE'
 
-            evt = SpiderFootEvent(evt_type, domain, self.__name__, event)
+            evt = ShadowTraceEvent(evt_type, domain, self.__name__, event)
             self.notifyListeners(evt)
 
             if self.sf.isDomain(domain, self.opts['_internettlds']):
                 if evt_type == 'CO_HOSTED_SITE':
-                    evt = SpiderFootEvent('CO_HOSTED_SITE_DOMAIN', domain, self.__name__, event)
+                    evt = ShadowTraceEvent('CO_HOSTED_SITE_DOMAIN', domain, self.__name__, event)
                     self.notifyListeners(evt)
                 else:
-                    evt = SpiderFootEvent('DOMAIN_NAME', domain, self.__name__, event)
+                    evt = ShadowTraceEvent('DOMAIN_NAME', domain, self.__name__, event)
                     self.notifyListeners(evt)
 
 # End of sfp_crt class

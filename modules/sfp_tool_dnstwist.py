@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_tool_dnstwist
-# Purpose:      SpiderFoot plug-in for using the 'dnstwist' tool.
+# Purpose:      ShadowTrace plug-in for using the 'dnstwist' tool.
 #               Tool: https://github.com/elceef/dnstwist
 #
 # Author:      Steve Micallef <steve@binarypool.com>
@@ -16,10 +16,10 @@ from pathlib import Path
 from shutil import which
 from subprocess import PIPE, Popen, TimeoutExpired
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin, SpiderFootHelpers
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin, ShadowTraceHelpers
 
 
-class sfp_tool_dnstwist(SpiderFootPlugin):
+class sfp_tool_dnstwist(ShadowTracePlugin):
 
     meta = {
         'name': "Tool - DNSTwist",
@@ -92,7 +92,7 @@ class sfp_tool_dnstwist(SpiderFootPlugin):
         self.results[eventData] = True
 
         # Sanitize domain name
-        if not SpiderFootHelpers.sanitiseInput(eventData):
+        if not ShadowTraceHelpers.sanitiseInput(eventData):
             self.error("Invalid input, refusing to run.")
             return
 
@@ -154,7 +154,7 @@ class sfp_tool_dnstwist(SpiderFootPlugin):
                     if self.getTarget().matches(domain, includeParents=True):
                         continue
 
-                    evt = SpiderFootEvent("SIMILARDOMAIN", domain,
+                    evt = ShadowTraceEvent("SIMILARDOMAIN", domain,
                                           self.__name__, event)
                     self.notifyListeners(evt)
             except Exception as e:

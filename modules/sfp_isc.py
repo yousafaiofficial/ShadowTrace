@@ -12,10 +12,10 @@
 
 import re
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_isc(SpiderFootPlugin):
+class sfp_isc(ShadowTracePlugin):
 
     meta = {
         'name': "Internet Storm Center",
@@ -145,10 +145,10 @@ class sfp_isc(SpiderFootPlugin):
         url = f"https://isc.sans.edu/api/ip/{eventData}"
         text = f"Internet Storm Center [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_isc class

@@ -10,10 +10,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_fortinet(SpiderFootPlugin):
+class sfp_fortinet(ShadowTracePlugin):
 
     meta = {
         'name': "FortiGuard Antispam",
@@ -128,10 +128,10 @@ class sfp_fortinet(SpiderFootPlugin):
         url = f"https://www.fortiguard.com/search?q={eventData}&engine=8"
         text = f"FortiGuard Antispam [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_fortinet class

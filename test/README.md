@@ -1,6 +1,6 @@
 # Tests
 
-SpiderFoot includes various test suites.
+ShadowTrace includes various test suites.
 
 
 ## Unit and Integration Tests
@@ -11,7 +11,7 @@ Unit and integration tests require test dependencies to be installed:
 pip3 install -r test/requirements.txt
 ```
 
-To run the tests locally, run `./test/run` from the SpiderFoot root directory.
+To run the tests locally, run `./test/run` from the ShadowTrace root directory.
 
 These tests are run on all pull requests automatically.
 
@@ -43,7 +43,7 @@ intended and that SpiderFooot is operating correctly as a whole.
 These tests use a headless browser (Firefox by default), and
 must be run with `./test/acceptance` as current working directory.
 
-Requires SpiderFoot web server to be running on default port (`5001`).
+Requires ShadowTrace web server to be running on default port (`5001`).
 
 Requires test dependencies to be installed:
 
@@ -51,10 +51,10 @@ Requires test dependencies to be installed:
 pip3 install -r test/acceptance/requirements.txt
 ```
 
-To run the tests, start the SpiderFoot web interface on the default port:
+To run the tests, start the ShadowTrace web interface on the default port:
 
 ```
-python3 ./sf.py -l 127.0.0.1:5001
+python3 ./st.py -l 127.0.0.1:5001
 ```
 
 Then run robot (override the `BROWSER` variable if necessary):

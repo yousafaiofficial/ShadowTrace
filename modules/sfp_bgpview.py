@@ -13,10 +13,10 @@
 import json
 import time
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_bgpview(SpiderFootPlugin):
+class sfp_bgpview(ShadowTracePlugin):
 
     meta = {
         'name': "BGPView",
@@ -178,7 +178,7 @@ class sfp_bgpview(SpiderFootPlugin):
                 self.info("No results found for ASN " + eventData)
                 return
 
-            e = SpiderFootEvent('RAW_RIR_DATA', str(data), self.__name__, event)
+            e = ShadowTraceEvent('RAW_RIR_DATA', str(data), self.__name__, event)
             self.notifyListeners(e)
 
             address = data.get('owner_address')
@@ -186,7 +186,7 @@ class sfp_bgpview(SpiderFootPlugin):
             if not address:
                 return
 
-            evt = SpiderFootEvent('PHYSICAL_ADDRESS', ', '.join([_f for _f in address if _f]), self.__name__, event)
+            evt = ShadowTraceEvent('PHYSICAL_ADDRESS', ', '.join([_f for _f in address if _f]), self.__name__, event)
             self.notifyListeners(evt)
 
         if eventName in ['NETBLOCK_MEMBER', 'NETBLOCKV6_MEMBER']:
@@ -196,7 +196,7 @@ class sfp_bgpview(SpiderFootPlugin):
                 self.info("No results found for netblock " + eventData)
                 return
 
-            e = SpiderFootEvent('RAW_RIR_DATA', str(data), self.__name__, event)
+            e = ShadowTraceEvent('RAW_RIR_DATA', str(data), self.__name__, event)
             self.notifyListeners(e)
 
             address = data.get('owner_address')
@@ -204,7 +204,7 @@ class sfp_bgpview(SpiderFootPlugin):
             if not address:
                 return
 
-            evt = SpiderFootEvent('PHYSICAL_ADDRESS', ', '.join([_f for _f in address if _f]), self.__name__, event)
+            evt = ShadowTraceEvent('PHYSICAL_ADDRESS', ', '.join([_f for _f in address if _f]), self.__name__, event)
             self.notifyListeners(evt)
 
         if eventName in ['IP_ADDRESS', 'IPV6_ADDRESS']:
@@ -214,7 +214,7 @@ class sfp_bgpview(SpiderFootPlugin):
                 self.info("No results found for IP address " + eventData)
                 return
 
-            e = SpiderFootEvent('RAW_RIR_DATA', str(data), self.__name__, event)
+            e = ShadowTraceEvent('RAW_RIR_DATA', str(data), self.__name__, event)
             self.notifyListeners(e)
 
             prefixes = data.get('prefixes')
@@ -236,14 +236,14 @@ class sfp_bgpview(SpiderFootPlugin):
                     continue
 
                 self.info(f"Netblock found: {p} ({asn})")
-                evt = SpiderFootEvent("BGP_AS_MEMBER", str(asn), self.__name__, event)
+                evt = ShadowTraceEvent("BGP_AS_MEMBER", str(asn), self.__name__, event)
                 self.notifyListeners(evt)
 
                 if self.sf.validIpNetwork(p):
                     if ":" in p:
-                        evt = SpiderFootEvent("NETBLOCKV6_MEMBER", p, self.__name__, event)
+                        evt = ShadowTraceEvent("NETBLOCKV6_MEMBER", p, self.__name__, event)
                     else:
-                        evt = SpiderFootEvent("NETBLOCK_MEMBER", p, self.__name__, event)
+                        evt = ShadowTraceEvent("NETBLOCK_MEMBER", p, self.__name__, event)
                     self.notifyListeners(evt)
 
 # End of sfp_bgpview class

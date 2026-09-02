@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:        sfp_comodo
-# Purpose:     SpiderFoot plug-in for looking up whether hosts are blocked by
+# Purpose:     ShadowTrace plug-in for looking up whether hosts are blocked by
 #              Comodo Secure DNS.
 #
 # Author:      Steve Micallef <steve@binarypool.com>
@@ -13,10 +13,10 @@
 
 import dns.resolver
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_comodo(SpiderFootPlugin):
+class sfp_comodo(ShadowTracePlugin):
 
     meta = {
         'name': "Comodo Secure DNS",
@@ -124,10 +124,10 @@ class sfp_comodo(SpiderFootPlugin):
         if found:
             return
 
-        evt = SpiderFootEvent(blacklist_type, f"Comodo Secure DNS [{eventData}]", self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, f"Comodo Secure DNS [{eventData}]", self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(malicious_type, f"Comodo Secure DNS [{eventData}]", self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, f"Comodo Secure DNS [{eventData}]", self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_comodo class

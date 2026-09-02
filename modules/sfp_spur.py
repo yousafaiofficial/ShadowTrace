@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_spur
-# Purpose:      Spiderfoot plugin to search spur.us API for any
+# Purpose:      Shadowtrace plugin to search spur.us API for any
 #               malicious activity by the target
 #
 # Author:      Krishnasis Mandal <krishnasis@hotmail.com>
@@ -15,10 +15,10 @@ import json
 
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_spur(SpiderFootPlugin):
+class sfp_spur(ShadowTracePlugin):
 
     meta = {
         'name': "spur.us",
@@ -199,12 +199,12 @@ class sfp_spur(SpiderFootPlugin):
 
             # For netblocks, create the event for the IP address to link to later
             if eventName.startswith("NETBLOCK_"):
-                ipEvt = SpiderFootEvent("IP_ADDRESS", addr, self.__name__, event)
+                ipEvt = ShadowTraceEvent("IP_ADDRESS", addr, self.__name__, event)
                 self.notifyListeners(ipEvt)
-                evt = SpiderFootEvent("RAW_RIR_DATA", str(data), self.__name__, ipEvt)
+                evt = ShadowTraceEvent("RAW_RIR_DATA", str(data), self.__name__, ipEvt)
                 self.notifyListeners(evt)
             else:
-                evt = SpiderFootEvent("RAW_RIR_DATA", str(data), self.__name__, event)
+                evt = ShadowTraceEvent("RAW_RIR_DATA", str(data), self.__name__, event)
                 self.notifyListeners(evt)
 
             geoTag = data.get('geoLite')
@@ -225,13 +225,13 @@ class sfp_spur(SpiderFootPlugin):
                     geoInfo += country
 
                 if eventName.startswith("NETBLOCK_"):
-                    evt = SpiderFootEvent("GEOINFO", geoInfo, self.__name__, ipEvt)
+                    evt = ShadowTraceEvent("GEOINFO", geoInfo, self.__name__, ipEvt)
                     self.notifyListeners(evt)
                 elif eventName.startswith("AFFILIATE_"):
                     # Don't report GEOINFO for Affiliates
                     pass
                 else:
-                    evt = SpiderFootEvent("GEOINFO", geoInfo, self.__name__, event)
+                    evt = ShadowTraceEvent("GEOINFO", geoInfo, self.__name__, event)
                     self.notifyListeners(evt)
 
             asData = data.get('as')
@@ -241,13 +241,13 @@ class sfp_spur(SpiderFootPlugin):
 
                 if orgName:
                     if eventName.startswith("NETBLOCK_"):
-                        evt = SpiderFootEvent("COMPANY_NAME", orgName, self.__name__, ipEvt)
+                        evt = ShadowTraceEvent("COMPANY_NAME", orgName, self.__name__, ipEvt)
                         self.notifyListeners(evt)
                     elif eventName.startswith("AFFILIATE_"):
                         # Don't report COMPANY_NAME for Affiliates
                         pass
                     else:
-                        evt = SpiderFootEvent("COMPANY_NAME", orgName, self.__name__, event)
+                        evt = ShadowTraceEvent("COMPANY_NAME", orgName, self.__name__, event)
                         self.notifyListeners(evt)
 
             vpnOperators = data.get('vpnOperators')
@@ -269,13 +269,13 @@ class sfp_spur(SpiderFootPlugin):
                 maliciousIPDesc = maliciousIPDesc.strip(", ")
 
                 if eventName.startswith("NETBLOCK_"):
-                    evt = SpiderFootEvent("MALICIOUS_IPADDR", maliciousIPDesc, self.__name__, ipEvt)
+                    evt = ShadowTraceEvent("MALICIOUS_IPADDR", maliciousIPDesc, self.__name__, ipEvt)
                     self.notifyListeners(evt)
                 elif eventName.startswith("AFFILIATE_"):
-                    evt = SpiderFootEvent("MALICIOUS_AFFILIATE_IPADDR", maliciousIPDesc, self.__name__, event)
+                    evt = ShadowTraceEvent("MALICIOUS_AFFILIATE_IPADDR", maliciousIPDesc, self.__name__, event)
                     self.notifyListeners(evt)
                 else:
-                    evt = SpiderFootEvent("MALICIOUS_IPADDR", maliciousIPDesc, self.__name__, event)
+                    evt = ShadowTraceEvent("MALICIOUS_IPADDR", maliciousIPDesc, self.__name__, event)
                     self.notifyListeners(evt)
 
 # End of sfp_spur class

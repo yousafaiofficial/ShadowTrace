@@ -16,10 +16,10 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_wigle(SpiderFootPlugin):
+class sfp_wigle(ShadowTracePlugin):
 
     meta = {
         'name': "WiGLE",
@@ -114,7 +114,7 @@ class sfp_wigle(SpiderFootPlugin):
         res = self.sf.fetchUrl(
             "https://api.wigle.net/api/v2/network/search?" + urllib.parse.urlencode(params),
             timeout=30,
-            useragent="SpiderFoot",
+            useragent="ShadowTrace",
             headers=hdrs
         )
 
@@ -181,7 +181,7 @@ class sfp_wigle(SpiderFootPlugin):
             return
 
         for n in nets:
-            e = SpiderFootEvent("WIFI_ACCESS_POINT", n, self.__name__, event)
+            e = ShadowTraceEvent("WIFI_ACCESS_POINT", n, self.__name__, event)
             self.notifyListeners(e)
 
 # End of sfp_wigle class

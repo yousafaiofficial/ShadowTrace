@@ -10,10 +10,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_coinblocker(SpiderFootPlugin):
+class sfp_coinblocker(ShadowTracePlugin):
 
     meta = {
         'name': "CoinBlocker Lists",
@@ -187,10 +187,10 @@ class sfp_coinblocker(SpiderFootPlugin):
         url = "https://zerodot1.gitlab.io/CoinBlockerLists/list.txt"
         text = f"CoinBlocker [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_coinblocker class

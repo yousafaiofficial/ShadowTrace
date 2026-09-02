@@ -14,10 +14,10 @@ import re
 
 from bs4 import BeautifulSoup
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_reversewhois(SpiderFootPlugin):
+class sfp_reversewhois(ShadowTracePlugin):
 
     meta = {
         "name": "ReverseWhois",
@@ -121,14 +121,14 @@ class sfp_reversewhois(SpiderFootPlugin):
         for domain in set(domains):
             # if this domain isn't the main target
             if not self.getTarget().matches(domain, includeChildren=False):
-                e = SpiderFootEvent("AFFILIATE_INTERNET_NAME", domain, self.__name__, event)
+                e = ShadowTraceEvent("AFFILIATE_INTERNET_NAME", domain, self.__name__, event)
                 self.notifyListeners(e)
                 if self.sf.isDomain(domain, self.opts["_internettlds"]):
-                    evt = SpiderFootEvent("AFFILIATE_DOMAIN_NAME", domain, self.__name__, event)
+                    evt = ShadowTraceEvent("AFFILIATE_DOMAIN_NAME", domain, self.__name__, event)
                     self.notifyListeners(evt)
 
         for registrar in set(registrars):
-            e = SpiderFootEvent("DOMAIN_REGISTRAR", registrar, self.__name__, event)
+            e = ShadowTraceEvent("DOMAIN_REGISTRAR", registrar, self.__name__, event)
             self.notifyListeners(e)
 
 # End of sfp_reversewhois class

@@ -15,10 +15,10 @@ import datetime
 import json
 import time
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_intelx(SpiderFootPlugin):
+class sfp_intelx(ShadowTracePlugin):
 
     meta = {
         'name': "IntelligenceX",
@@ -110,7 +110,7 @@ class sfp_intelx(SpiderFootPlugin):
         retdata = list()
 
         headers = {
-            "User-Agent": "SpiderFoot",
+            "User-Agent": "ShadowTrace",
             "x-key": self.opts['api_key'],
         }
 
@@ -248,7 +248,7 @@ class sfp_intelx(SpiderFootPlugin):
                     continue
 
                 # Notify other modules of what you've found
-                e = SpiderFootEvent(evt, val, self.__name__, event)
+                e = ShadowTraceEvent(evt, val, self.__name__, event)
                 self.notifyListeners(e)
 
         if "public.intelx.io" in self.opts['base_url'] or eventName != "INTERNET_NAME":
@@ -283,11 +283,11 @@ class sfp_intelx(SpiderFootPlugin):
                     continue
 
                 # Notify other modules of what you've found
-                e = SpiderFootEvent(evt, val, self.__name__, event)
+                e = ShadowTraceEvent(evt, val, self.__name__, event)
                 self.notifyListeners(e)
 
                 if evt == "INTERNET_NAME" and self.sf.isDomain(val, self.opts['_internettlds']):
-                    e = SpiderFootEvent("DOMAIN_NAME", val, self.__name__, event)
+                    e = ShadowTraceEvent("DOMAIN_NAME", val, self.__name__, event)
                     self.notifyListeners(e)
 
 # End of sfp_intelx class

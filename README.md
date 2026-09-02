@@ -37,7 +37,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 3. Launch ShadowTrace Web UI
-python3 sf.py -l 127.0.0.1:5001
+python3 st.py -l 127.0.0.1:5001
 ```
 
 Open your web browser and navigate to **`http://127.0.0.1:5001`**.
@@ -56,7 +56,7 @@ Open your web browser and navigate to **`http://127.0.0.1:5001`**.
 ---
 
 
-<img src="https://www.spiderfoot.net/wp-content/uploads/2022/04/opensource-screenshot-v4.png" />
+<img src="https://www.shadowtrace.net/wp-content/uploads/2022/04/opensource-screenshot-v4.png" />
 
 ### FEATURES
 
@@ -77,7 +77,7 @@ Open your web browser and navigate to **`http://127.0.0.1:5001`**.
 
 ### WANT MORE?
 
-Need more from SpiderFoot? Check out [SpiderFoot HX](https://www.spiderfoot.net/hx) for:
+Need more from ShadowTrace? Check out [ShadowTrace HX](https://www.shadowtrace.net/hx) for:
 - 100% Cloud-based and managed for you
 - Attack Surface Monitoring with change notifications by email, REST and Slack
 - Multiple targets per scan
@@ -89,16 +89,16 @@ Need more from SpiderFoot? Check out [SpiderFoot HX](https://www.spiderfoot.net/
 - Drive it with a fully RESTful API
 - TOR integration built-in
 - Screenshotting
-- Bring your own Python SpiderFoot modules
+- Bring your own Python ShadowTrace modules
 - Feed scan data to Splunk, ElasticSearch and REST endpoints
 
-See the full set of differences between SpiderFoot HX and the open source version [here](https://www.spiderfoot.net/open-source-vs-hx/).
+See the full set of differences between ShadowTrace HX and the open source version [here](https://www.shadowtrace.net/open-source-vs-hx/).
 
 ### USES
 
-SpiderFoot can be used offensively (e.g. in a red team exercise or penetration test) for reconnaissance of your target or defensively to gather information about what you or your organisation might have exposed over the Internet.
+ShadowTrace can be used offensively (e.g. in a red team exercise or penetration test) for reconnaissance of your target or defensively to gather information about what you or your organisation might have exposed over the Internet.
 
-You can target the following entities in a SpiderFoot scan:
+You can target the following entities in a ShadowTrace scan:
 
  - IP address
  - Domain/sub-domain name
@@ -111,7 +111,7 @@ You can target the following entities in a SpiderFoot scan:
  - Person's name
  - Bitcoin address
  
-SpiderFoot's 200+ modules feed each other in a publisher/subscriber model to ensure maximum data extraction to do things like:
+ShadowTrace's 200+ modules feed each other in a publisher/subscriber model to ensure maximum data extraction to do things like:
 
 - [Host/sub-domain/TLD enumeration/extraction](https://asciinema.org/a/295912)
 - [Email address, phone number and human name extraction](https://asciinema.org/a/295947)
@@ -132,42 +132,42 @@ SpiderFoot's 200+ modules feed each other in a publisher/subscriber model to ens
 
 ### INSTALLING & RUNNING
 
-To install and run SpiderFoot, you need at least Python 3.7 and a number of Python libraries which you can install with `pip`. We recommend you install a packaged release since master will often have bleeding edge features and modules that aren't fully tested.
+To install and run ShadowTrace, you need at least Python 3.7 and a number of Python libraries which you can install with `pip`. We recommend you install a packaged release since master will often have bleeding edge features and modules that aren't fully tested.
 
 #### Stable build (packaged release):
 
 ```
- wget https://github.com/smicallef/spiderfoot/archive/v4.0.tar.gz
+ wget https://github.com/smicallef/shadowtrace/archive/v4.0.tar.gz
  tar zxvf v4.0.tar.gz
- cd spiderfoot-4.0
+ cd shadowtrace-4.0
  pip3 install -r requirements.txt
- python3 ./sf.py -l 127.0.0.1:5001
+ python3 ./st.py -l 127.0.0.1:5001
 ```
 
 #### Development build (cloning git master branch):
 
 ```
- git clone https://github.com/smicallef/spiderfoot.git
- cd spiderfoot
+ git clone https://github.com/smicallef/shadowtrace.git
+ cd shadowtrace
  pip3 install -r requirements.txt
- python3 ./sf.py -l 127.0.0.1:5001
+ python3 ./st.py -l 127.0.0.1:5001
 ```
 
-Check out the [documentation](https://www.spiderfoot.net/documentation) and our [asciinema videos](https://asciinema.org/~spiderfoot) for more tutorials.
+Check out the [documentation](https://www.shadowtrace.net/documentation) and our [asciinema videos](https://asciinema.org/~shadowtrace) for more tutorials.
 
 ### COMMUNITY
 
-Whether you're a contributor, user or just curious about SpiderFoot and OSINT in general, we'd love to have you join our community! SpiderFoot now has a [Discord server](https://discord.gg/vyvztrG) for seeking help from the community, requesting features or just general OSINT chit-chat.
+Whether you're a contributor, user or just curious about ShadowTrace and OSINT in general, we'd love to have you join our community! ShadowTrace now has a [Discord server](https://discord.gg/vyvztrG) for seeking help from the community, requesting features or just general OSINT chit-chat.
 
 ### WRITING CORRELATION RULES
 
-We have a comprehensive write-up and reference of the correlation rule-set introduced in SpiderFoot 4.0 [here](/correlations/README.md).
+We have a comprehensive write-up and reference of the correlation rule-set introduced in ShadowTrace 4.0 [here](/correlations/README.md).
 
 Also take a look at the [template.yaml](/correlations/template.yaml) file for a walk through. The existing [37 rules](/correlations) are also quite readable and good as starting points for additional rules.
 
 ### MODULES / INTEGRATIONS
 
-SpiderFoot has over 200 modules, most of which *don't require API keys*, and many of those that do require API keys *have a free tier*.
+ShadowTrace has over 200 modules, most of which *don't require API keys*, and many of those that do require API keys *have a free tier*.
 
 | Name     | Description | Type   |
 |:---------| :-----------|:-------|
@@ -403,6 +403,6 @@ Whois|Perform a WHOIS look-up on domain names and owned netblocks.|Internal
 
 ### DOCUMENTATION
 
-Read more at the [project website](https://www.spiderfoot.net/r.php?u=aHR0cHM6Ly93d3cuc3BpZGVyZm9vdC5uZXQv&s=os_gh), including more complete documentation, blog posts with tutorials/guides, plus information about [SpiderFoot HX](https://www.spiderfoot.net/r.php?u=aHR0cHM6Ly93d3cuc3BpZGVyZm9vdC5uZXQvaHgvCg==&s=os_gh).
+Read more at the [project website](https://www.shadowtrace.net/r.php?u=aHR0cHM6Ly93d3cuc3BpZGVyZm9vdC5uZXQv&s=os_gh), including more complete documentation, blog posts with tutorials/guides, plus information about [ShadowTrace HX](https://www.shadowtrace.net/r.php?u=aHR0cHM6Ly93d3cuc3BpZGVyZm9vdC5uZXQvaHgvCg==&s=os_gh).
 
-Latest updates announced on [Twitter](https://twitter.com/spiderfoot).
+Latest updates announced on [Twitter](https://twitter.com/shadowtrace).

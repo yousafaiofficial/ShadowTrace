@@ -1,81 +1,81 @@
-# SpiderFoot specific #
+# ShadowTrace specific #
 #######################
 /cache/
 /log/
-/spiderfoot.db*
+/shadowtrace.db*
 passwd
-spiderfoot.crt
-spiderfoot.key
+shadowtrace.crt
+shadowtrace.key
 
-spiderfoot/static/node_modules/*
+shadowtrace/static/node_modules/*
 
-spiderfoot/static/node_modules/alertifyjs/*
-spiderfoot/static/node_modules/alertifyjs/build/*
-spiderfoot/static/node_modules/alertifyjs/build/css/*
+shadowtrace/static/node_modules/alertifyjs/*
+shadowtrace/static/node_modules/alertifyjs/build/*
+shadowtrace/static/node_modules/alertifyjs/build/css/*
 
-!spiderfoot/static/node_modules/alertifyjs/
-!spiderfoot/static/node_modules/alertifyjs/build/
-!spiderfoot/static/node_modules/alertifyjs/build/alertify.min.js
-!spiderfoot/static/node_modules/alertifyjs/build/css/
-!spiderfoot/static/node_modules/alertifyjs/build/css/alertify.min.css
+!shadowtrace/static/node_modules/alertifyjs/
+!shadowtrace/static/node_modules/alertifyjs/build/
+!shadowtrace/static/node_modules/alertifyjs/build/alertify.min.js
+!shadowtrace/static/node_modules/alertifyjs/build/css/
+!shadowtrace/static/node_modules/alertifyjs/build/css/alertify.min.css
 
-spiderfoot/static/node_modules/bootstrap/*
-spiderfoot/static/node_modules/bootstrap/dist/*
-spiderfoot/static/node_modules/bootstrap/dist/js/*
-spiderfoot/static/node_modules/bootstrap/dist/css/*
-spiderfoot/static/node_modules/bootstrap/dist/fonts/*
+shadowtrace/static/node_modules/bootstrap/*
+shadowtrace/static/node_modules/bootstrap/dist/*
+shadowtrace/static/node_modules/bootstrap/dist/js/*
+shadowtrace/static/node_modules/bootstrap/dist/css/*
+shadowtrace/static/node_modules/bootstrap/dist/fonts/*
 
-!spiderfoot/static/node_modules/bootstrap/
-!spiderfoot/static/node_modules/bootstrap/dist/
-!spiderfoot/static/node_modules/bootstrap/dist/js/
-!spiderfoot/static/node_modules/bootstrap/dist/js/bootstrap.min.js
-!spiderfoot/static/node_modules/bootstrap/dist/css/
-!spiderfoot/static/node_modules/bootstrap/dist/css/bootstrap.min.css
-!spiderfoot/static/node_modules/bootstrap/dist/fonts/
-!spiderfoot/static/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
-!spiderfoot/static/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2
+!shadowtrace/static/node_modules/bootstrap/
+!shadowtrace/static/node_modules/bootstrap/dist/
+!shadowtrace/static/node_modules/bootstrap/dist/js/
+!shadowtrace/static/node_modules/bootstrap/dist/js/bootstrap.min.js
+!shadowtrace/static/node_modules/bootstrap/dist/css/
+!shadowtrace/static/node_modules/bootstrap/dist/css/bootstrap.min.css
+!shadowtrace/static/node_modules/bootstrap/dist/fonts/
+!shadowtrace/static/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
+!shadowtrace/static/node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2
 
-spiderfoot/static/node_modules/jquery/*
-spiderfoot/static/node_modules/jquery/dist/*
+shadowtrace/static/node_modules/jquery/*
+shadowtrace/static/node_modules/jquery/dist/*
 
-!spiderfoot/static/node_modules/jquery/
-!spiderfoot/static/node_modules/jquery/dist/
-!spiderfoot/static/node_modules/jquery/dist/jquery.min.js
+!shadowtrace/static/node_modules/jquery/
+!shadowtrace/static/node_modules/jquery/dist/
+!shadowtrace/static/node_modules/jquery/dist/jquery.min.js
 
-spiderfoot/static/node_modules/sigma/*
-spiderfoot/static/node_modules/sigma/build/*
-spiderfoot/static/node_modules/sigma/build/plugins/*
+shadowtrace/static/node_modules/sigma/*
+shadowtrace/static/node_modules/sigma/build/*
+shadowtrace/static/node_modules/sigma/build/plugins/*
 
-!spiderfoot/static/node_modules/sigma/
-!spiderfoot/static/node_modules/sigma/build/
-!spiderfoot/static/node_modules/sigma/build/sigma.min.js
-!spiderfoot/static/node_modules/sigma/build/plugins/
-!spiderfoot/static/node_modules/sigma/build/plugins/sigma.parsers.json.min.js
-!spiderfoot/static/node_modules/sigma/build/plugins/sigma.plugins.dragNodes.min.js
-!spiderfoot/static/node_modules/sigma/build/plugins/sigma.layout.forceAtlas2.min.js
-!spiderfoot/static/node_modules/sigma/build/plugins/sigma.renderers.snapshot.min.js
+!shadowtrace/static/node_modules/sigma/
+!shadowtrace/static/node_modules/sigma/build/
+!shadowtrace/static/node_modules/sigma/build/sigma.min.js
+!shadowtrace/static/node_modules/sigma/build/plugins/
+!shadowtrace/static/node_modules/sigma/build/plugins/sigma.parsers.json.min.js
+!shadowtrace/static/node_modules/sigma/build/plugins/sigma.plugins.dragNodes.min.js
+!shadowtrace/static/node_modules/sigma/build/plugins/sigma.layout.forceAtlas2.min.js
+!shadowtrace/static/node_modules/sigma/build/plugins/sigma.renderers.snapshot.min.js
 
-spiderfoot/static/node_modules/tablesorter/*
-spiderfoot/static/node_modules/tablesorter/dist/*
-spiderfoot/static/node_modules/tablesorter/dist/js/*
-spiderfoot/static/node_modules/tablesorter/dist/css/*
-spiderfoot/static/node_modules/tablesorter/dist/js/extras/*
+shadowtrace/static/node_modules/tablesorter/*
+shadowtrace/static/node_modules/tablesorter/dist/*
+shadowtrace/static/node_modules/tablesorter/dist/js/*
+shadowtrace/static/node_modules/tablesorter/dist/css/*
+shadowtrace/static/node_modules/tablesorter/dist/js/extras/*
 
-!spiderfoot/static/node_modules/tablesorter/
-!spiderfoot/static/node_modules/tablesorter/dist/
-!spiderfoot/static/node_modules/tablesorter/dist/css/
-!spiderfoot/static/node_modules/tablesorter/dist/css/jquery.tablesorter.pager.min.css
-!spiderfoot/static/node_modules/tablesorter/dist/css/theme.default.min.css
-!spiderfoot/static/node_modules/tablesorter/dist/js/
-!spiderfoot/static/node_modules/tablesorter/dist/js/jquery.tablesorter.min.js
-!spiderfoot/static/node_modules/tablesorter/dist/js/jquery.tablesorter.widgets.min.js
-!spiderfoot/static/node_modules/tablesorter/dist/js/extras/
-!spiderfoot/static/node_modules/tablesorter/dist/js/extras/jquery.tablesorter.pager.min.js
+!shadowtrace/static/node_modules/tablesorter/
+!shadowtrace/static/node_modules/tablesorter/dist/
+!shadowtrace/static/node_modules/tablesorter/dist/css/
+!shadowtrace/static/node_modules/tablesorter/dist/css/jquery.tablesorter.pager.min.css
+!shadowtrace/static/node_modules/tablesorter/dist/css/theme.default.min.css
+!shadowtrace/static/node_modules/tablesorter/dist/js/
+!shadowtrace/static/node_modules/tablesorter/dist/js/jquery.tablesorter.min.js
+!shadowtrace/static/node_modules/tablesorter/dist/js/jquery.tablesorter.widgets.min.js
+!shadowtrace/static/node_modules/tablesorter/dist/js/extras/
+!shadowtrace/static/node_modules/tablesorter/dist/js/extras/jquery.tablesorter.pager.min.js
 
-spiderfoot/static/node_modules/d3/*
+shadowtrace/static/node_modules/d3/*
 
-!spiderfoot/static/node_modules/d3/
-!spiderfoot/static/node_modules/d3/d3.min.js
+!shadowtrace/static/node_modules/d3/
+!shadowtrace/static/node_modules/d3/d3.min.js
 
 # Compiled source #
 ###################

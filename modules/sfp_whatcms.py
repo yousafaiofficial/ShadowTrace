@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------------------
 # Name:        sfp_whatcms
-# Purpose:     SpiderFoot plug-in to check which web technology is used
+# Purpose:     ShadowTrace plug-in to check which web technology is used
 #              on a target website using WhatCMS API.
 #
 # Author:      <bcoles@gmail.com>
@@ -16,10 +16,10 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_whatcms(SpiderFootPlugin):
+class sfp_whatcms(ShadowTracePlugin):
 
     meta = {
         'name': "WhatCMS",
@@ -225,13 +225,13 @@ class sfp_whatcms(SpiderFootPlugin):
             self.debug('No web technology found for ' + eventData)
             return
 
-        evt = SpiderFootEvent('RAW_RIR_DATA', str(results), self.__name__, event)
+        evt = ShadowTraceEvent('RAW_RIR_DATA', str(results), self.__name__, event)
         self.notifyListeners(evt)
 
         for result in results:
             if result.get('name'):
                 software = ' '.join([_f for _f in [result.get('name'), result.get('version')] if _f])
-                evt = SpiderFootEvent('WEBSERVER_TECHNOLOGY', software, self.__name__, event)
+                evt = ShadowTraceEvent('WEBSERVER_TECHNOLOGY', software, self.__name__, event)
                 self.notifyListeners(evt)
             else:
                 self.debug('No web technology found for ' + eventData)

@@ -12,10 +12,10 @@
 
 import dns.resolver
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_dns_for_family(SpiderFootPlugin):
+class sfp_dns_for_family(ShadowTracePlugin):
 
     meta = {
         'name': "DNS for Family",
@@ -112,7 +112,7 @@ class sfp_dns_for_family(SpiderFootPlugin):
                 continue
 
             self.debug(f"{eventData} blocked by DNS for Family")
-            evt = SpiderFootEvent(blacklist_type, f"DNS for Family [{eventData}]", self.__name__, event)
+            evt = ShadowTraceEvent(blacklist_type, f"DNS for Family [{eventData}]", self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_dns_for_family class

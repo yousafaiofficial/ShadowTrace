@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_pgp
-# Purpose:      SpiderFoot plug-in for looking up e-mail addresses in PGP
+# Purpose:      ShadowTrace plug-in for looking up e-mail addresses in PGP
 #               key servers as well as finding e-mail addresses belonging to
 #               your target.
 #
@@ -12,10 +12,10 @@
 # Licence:     MIT
 # -------------------------------------------------------------------------------
 
-from spiderfoot import SpiderFootEvent, SpiderFootHelpers, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTraceHelpers, ShadowTracePlugin
 
 
-class sfp_pgp(SpiderFootPlugin):
+class sfp_pgp(ShadowTracePlugin):
 
     meta = {
         'name': "PGP Key Servers",
@@ -129,7 +129,7 @@ class sfp_pgp(SpiderFootPlugin):
             if not res:
                 return
 
-            emails = SpiderFootHelpers.extractEmailsFromText(res['content'])
+            emails = ShadowTraceHelpers.extractEmailsFromText(res['content'])
             self.info(f"Found {len(emails)} email addresses")
 
             for email in emails:
@@ -143,7 +143,7 @@ class sfp_pgp(SpiderFootPlugin):
                     evttype = "AFFILIATE_EMAILADDR"
 
                 self.debug(f"Found e-mail address: {email}")
-                evt = SpiderFootEvent(evttype, email, self.__name__, event)
+                evt = ShadowTraceEvent(evttype, email, self.__name__, event)
                 self.notifyListeners(evt)
 
         if eventName == "EMAILADDR" and self.opts['retrieve_keys']:
@@ -155,12 +155,12 @@ class sfp_pgp(SpiderFootPlugin):
             if not res:
                 return
 
-            keys = SpiderFootHelpers.extractPgpKeysFromText(res['content'])
+            keys = ShadowTraceHelpers.extractPgpKeysFromText(res['content'])
             self.info(f"Found {len(keys)} public PGP keys")
 
             for key in keys:
                 self.debug(f"Found public key: {key}")
-                evt = SpiderFootEvent("PGP_KEY", key, self.__name__, event)
+                evt = ShadowTraceEvent("PGP_KEY", key, self.__name__, event)
                 self.notifyListeners(evt)
 
 # End of sfp_pgp class

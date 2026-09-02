@@ -9,10 +9,10 @@
 # Copyright:   (c) Steve Micallef 2013
 # Licence:     MIT
 # -------------------------------------------------------------------------------
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_bingsearch(SpiderFootPlugin):
+class sfp_bingsearch(ShadowTracePlugin):
 
     meta = {
         'name': "Bing",
@@ -121,11 +121,11 @@ class sfp_bingsearch(SpiderFootPlugin):
         for link in internal_links:
             self.debug("Found a link: " + link)
 
-            evt = SpiderFootEvent("LINKED_URL_INTERNAL", link, self.__name__, event)
+            evt = ShadowTraceEvent("LINKED_URL_INTERNAL", link, self.__name__, event)
             self.notifyListeners(evt)
 
         if internal_links:
-            evt = SpiderFootEvent(
+            evt = ShadowTraceEvent(
                 "RAW_RIR_DATA", str(res), self.__name__, event
             )
             self.notifyListeners(evt)

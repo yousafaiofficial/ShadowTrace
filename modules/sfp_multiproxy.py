@@ -13,10 +13,10 @@
 
 from netaddr import IPAddress, IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_multiproxy(SpiderFootPlugin):
+class sfp_multiproxy(ShadowTracePlugin):
 
     meta = {
         'name': "multiproxy.org Open Proxies",
@@ -205,10 +205,10 @@ class sfp_multiproxy(SpiderFootPlugin):
         url = "http://multiproxy.org/txt_all/proxy.txt"
         text = f"multiproxy.org Open Proxies [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_multiproxy class

@@ -14,10 +14,10 @@
 import datetime
 import json
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_archiveorg(SpiderFootPlugin):
+class sfp_archiveorg(ShadowTracePlugin):
 
     meta = {
         'name': "Archive.org",
@@ -181,7 +181,7 @@ class sfp_archiveorg(SpiderFootPlugin):
             name = eventName + "_HISTORIC"
 
             self.info("Found a historic file: " + wbmlink)
-            evt = SpiderFootEvent(name, wbmlink, self.__name__, event)
+            evt = ShadowTraceEvent(name, wbmlink, self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_archiveorg class

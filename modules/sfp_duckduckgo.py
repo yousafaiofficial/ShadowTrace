@@ -12,10 +12,10 @@
 
 import json
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_duckduckgo(SpiderFootPlugin):
+class sfp_duckduckgo(ShadowTracePlugin):
 
     meta = {
         'name': "DuckDuckGo",
@@ -87,7 +87,7 @@ class sfp_duckduckgo(SpiderFootPlugin):
 
         url = "https://api.duckduckgo.com/?q=" + eventData + "&format=json&pretty=1"
         res = self.sf.fetchUrl(url, timeout=self.opts['_fetchtimeout'],
-                               useragent="SpiderFoot")
+                               useragent="ShadowTrace")
 
         if res['content'] is None:
             self.error(f"Unable to fetch {url}")
@@ -110,7 +110,7 @@ class sfp_duckduckgo(SpiderFootPlugin):
             if "AFFILIATE" in eventName:
                 event_type = "AFFILIATE_" + event_type
 
-            evt = SpiderFootEvent(event_type, str(abstract_text), self.__name__, event)
+            evt = ShadowTraceEvent(event_type, str(abstract_text), self.__name__, event)
             self.notifyListeners(evt)
 
         related_topics = ret.get('RelatedTopics')
@@ -131,7 +131,7 @@ class sfp_duckduckgo(SpiderFootPlugin):
                     self.debug("No category text found from DuckDuckGo.")
                     continue
 
-                evt = SpiderFootEvent(event_type, category, self.__name__, event)
+                evt = ShadowTraceEvent(event_type, category, self.__name__, event)
                 self.notifyListeners(evt)
 
 # End of sfp_duckduckgo class

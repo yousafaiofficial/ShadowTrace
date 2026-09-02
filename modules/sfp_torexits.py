@@ -15,10 +15,10 @@ import json
 
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_torexits(SpiderFootPlugin):
+class sfp_torexits(ShadowTracePlugin):
 
     meta = {
         'name': "TOR Exit Nodes",
@@ -213,16 +213,16 @@ class sfp_torexits(SpiderFootPlugin):
 
             # For netblocks, we need to create the associated IP address event first.
             if eventName == 'NETBLOCK_OWNER':
-                pevent = SpiderFootEvent("IP_ADDRESS", addr, self.__name__, event)
+                pevent = ShadowTraceEvent("IP_ADDRESS", addr, self.__name__, event)
                 self.notifyListeners(pevent)
             if eventName == 'NETBLOCKV6_OWNER':
-                pevent = SpiderFootEvent("IPV6_ADDRESS", addr, self.__name__, event)
+                pevent = ShadowTraceEvent("IPV6_ADDRESS", addr, self.__name__, event)
                 self.notifyListeners(pevent)
             else:
                 pevent = event
 
             self.debug(f"IP address {addr} found in TOR exit node list.")
-            evt = SpiderFootEvent("TOR_EXIT_NODE", addr, self.__name__, pevent)
+            evt = ShadowTraceEvent("TOR_EXIT_NODE", addr, self.__name__, pevent)
             self.notifyListeners(evt)
 
 # End of sfp_torexits class

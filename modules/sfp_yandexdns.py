@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_yandexdns
-# Purpose:      SpiderFoot plug-in for looking up whether hosts are blocked by
+# Purpose:      ShadowTrace plug-in for looking up whether hosts are blocked by
 #               Yandex DNS.
 #
 # Author:      Steve Micallef <steve@binarypool.com>
@@ -13,10 +13,10 @@
 
 import dns.resolver
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_yandexdns(SpiderFootPlugin):
+class sfp_yandexdns(ShadowTracePlugin):
 
     meta = {
         'name': "Yandex DNS",
@@ -129,11 +129,11 @@ class sfp_yandexdns(SpiderFootPlugin):
             if k not in self.checks:
                 continue
 
-            evt = SpiderFootEvent(blacklist_type, f"{self.checks[k]} [{eventData}]", self.__name__, event)
+            evt = ShadowTraceEvent(blacklist_type, f"{self.checks[k]} [{eventData}]", self.__name__, event)
             self.notifyListeners(evt)
 
             if k == '213.180.193.250':
-                evt = SpiderFootEvent(malicious_type, f"{self.checks[k]} [{eventData}]", self.__name__, event)
+                evt = ShadowTraceEvent(malicious_type, f"{self.checks[k]} [{eventData}]", self.__name__, event)
                 self.notifyListeners(evt)
 
 # End of sfp_yandexdns class

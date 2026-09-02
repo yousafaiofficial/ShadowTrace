@@ -12,10 +12,10 @@
 
 from netaddr import IPAddress, IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_cleantalk(SpiderFootPlugin):
+class sfp_cleantalk(ShadowTracePlugin):
 
     meta = {
         'name': "CleanTalk Spam List",
@@ -188,10 +188,10 @@ class sfp_cleantalk(SpiderFootPlugin):
 
         text = f"CleanTalk Spam List [{eventData}]\n<SFURL>{url}</SFURL>"
 
-        evt = SpiderFootEvent(blacklist_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(blacklist_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
-        evt = SpiderFootEvent(malicious_type, text, self.__name__, event)
+        evt = ShadowTraceEvent(malicious_type, text, self.__name__, event)
         self.notifyListeners(evt)
 
 # End of sfp_cleantalk class

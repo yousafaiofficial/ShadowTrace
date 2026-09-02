@@ -14,10 +14,10 @@ import json
 
 from netaddr import IPNetwork
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_threatcrowd(SpiderFootPlugin):
+class sfp_threatcrowd(ShadowTracePlugin):
 
     meta = {
         'name': "ThreatCrowd",
@@ -101,7 +101,7 @@ class sfp_threatcrowd(SpiderFootPlugin):
         if not url:
             url = "https://www.threatcrowd.org/searchApi/v2/domain/report/?domain=" + qry
 
-        res = self.sf.fetchUrl(url, timeout=self.opts['_fetchtimeout'], useragent="SpiderFoot")
+        res = self.sf.fetchUrl(url, timeout=self.opts['_fetchtimeout'], useragent="ShadowTrace")
 
         if res['content'] is None:
             self.info(f"No ThreatCrowd info found for {qry}")
@@ -192,7 +192,7 @@ class sfp_threatcrowd(SpiderFootPlugin):
                 infourl = "<SFURL>" + info.get('permalink') + "</SFURL>"
 
                 # Notify other modules of what you've found
-                e = SpiderFootEvent(evt, "ThreatCrowd [" + addr + "]\n" + infourl, self.__name__, event)
+                e = ShadowTraceEvent(evt, "ThreatCrowd [" + addr + "]\n" + infourl, self.__name__, event)
                 self.notifyListeners(e)
 
 # End of sfp_threatcrowd class

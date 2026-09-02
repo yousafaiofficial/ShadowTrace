@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:        sfp_dnsdumpster
-# Purpose:     SpiderFoot plug-in for subdomain enumeration using
+# Purpose:     ShadowTrace plug-in for subdomain enumeration using
 #              dnsdumpster.com
 #
 # Author:      TheTechromancer
@@ -15,10 +15,10 @@ import re
 
 from bs4 import BeautifulSoup
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_dnsdumpster(SpiderFootPlugin):
+class sfp_dnsdumpster(ShadowTracePlugin):
 
     meta = {
         "name": "DNSDumpster",
@@ -56,7 +56,7 @@ class sfp_dnsdumpster(SpiderFootPlugin):
         url = "https://dnsdumpster.com"
         res1 = self.sf.fetchUrl(
             url,
-            useragent=self.opts.get("_useragent", "Spiderfoot")
+            useragent=self.opts.get("_useragent", "Shadowtrace")
         )
         if res1["code"] not in ["200"]:
             self.error(f"Bad response code \"{res1['code']}\" from DNSDumpster")
@@ -99,7 +99,7 @@ class sfp_dnsdumpster(SpiderFootPlugin):
                 "origin": "https://dnsdumpster.com",
                 "referer": "https://dnsdumpster.com/"
             },
-            useragent=self.opts.get("_useragent", "Spiderfoot")
+            useragent=self.opts.get("_useragent", "Shadowtrace")
         )
         if res2["code"] not in ["200"]:
             self.error(f"Bad response code \"{res2['code']}\" from DNSDumpster")
@@ -115,9 +115,9 @@ class sfp_dnsdumpster(SpiderFootPlugin):
 
     def sendEvent(self, source, host):
         if self.sf.resolveHost(host) or self.sf.resolveHost6(host):
-            e = SpiderFootEvent("INTERNET_NAME", host, self.__name__, source)
+            e = ShadowTraceEvent("INTERNET_NAME", host, self.__name__, source)
         else:
-            e = SpiderFootEvent("INTERNET_NAME_UNRESOLVED", host, self.__name__, source)
+            e = ShadowTraceEvent("INTERNET_NAME_UNRESOLVED", host, self.__name__, source)
         self.notifyListeners(e)
 
     def handleEvent(self, event):

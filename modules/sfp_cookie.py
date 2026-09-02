@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_cookie
-# Purpose:      SpiderFoot plug-in for extracting cookies from HTTP headers.
+# Purpose:      ShadowTrace plug-in for extracting cookies from HTTP headers.
 #
 # Author:      Steve Micallef <steve@binarypool.com>
 #
@@ -12,10 +12,10 @@
 
 import json
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_cookie(SpiderFootPlugin):
+class sfp_cookie(ShadowTracePlugin):
 
     meta = {
         'name': "Cookie Extractor",
@@ -73,7 +73,7 @@ class sfp_cookie(SpiderFootPlugin):
 
         cookie = data.get('cookie')
         if cookie:
-            evt = SpiderFootEvent("TARGET_WEB_COOKIE", cookie, self.__name__, event)
+            evt = ShadowTraceEvent("TARGET_WEB_COOKIE", cookie, self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_cookie class

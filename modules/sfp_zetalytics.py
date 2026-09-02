@@ -13,10 +13,10 @@
 import json
 from urllib.parse import urlencode
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_zetalytics(SpiderFootPlugin):
+class sfp_zetalytics(ShadowTracePlugin):
     BASE_URL = "https://zonecruncher.com/api/v1"
     meta = {
         "name": "Zetalytics",
@@ -63,7 +63,7 @@ class sfp_zetalytics(SpiderFootPlugin):
     def emit(self, etype, data, pevent):
         if self.checkForStop():
             return None
-        evt = SpiderFootEvent(etype, data, self.__name__, pevent)
+        evt = ShadowTraceEvent(etype, data, self.__name__, pevent)
         self.notifyListeners(evt)
         return evt
 
@@ -91,7 +91,7 @@ class sfp_zetalytics(SpiderFootPlugin):
         res = self.sf.fetchUrl(
             f"{self.BASE_URL}{path}/?{qs}",
             timeout=self.opts["_fetchtimeout"],
-            useragent="SpiderFoot",
+            useragent="ShadowTrace",
         )
 
         if res["content"] is None:

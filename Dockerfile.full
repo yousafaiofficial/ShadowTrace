@@ -1,7 +1,7 @@
 #
-# Spiderfoot Dockerfile (Full - includes all CLI tools, etc.)
+# Shadowtrace Dockerfile (Full - includes all CLI tools, etc.)
 #
-# http://www.spiderfoot.net
+# http://www.shadowtrace.net
 #
 # Written by: TheTechromancer
 #
@@ -28,9 +28,9 @@ RUN git clone https://github.com/urbanadventurer/WhatWeb \
     && gem install rchardet mongo json && cd /tools/WhatWeb \
     && bundle install && cd /tools
 
-RUN groupadd spiderfoot \
-    && useradd -m -g spiderfoot -d /home/spiderfoot -s /sbin/nologin \
-    -c "SpiderFoot User" spiderfoot
+RUN groupadd shadowtrace \
+    && useradd -m -g shadowtrace -d /home/shadowtrace -s /sbin/nologin \
+    -c "ShadowTrace User" shadowtrace
 
 # Install RetireJS
 RUN apt remove -y cmdtest \
@@ -67,18 +67,18 @@ RUN git clone https://github.com/drwetter/testssl.sh.git
 RUN pip3 install snallygaster trufflehog
 
 # Place database and logs outside installation directory
-ENV SPIDERFOOT_DATA /var/lib/spiderfoot
-ENV SPIDERFOOT_LOGS /var/lib/spiderfoot/log
-ENV SPIDERFOOT_CACHE /var/lib/spiderfoot/cache
+ENV SHADOWTRACE_DATA /var/lib/shadowtrace
+ENV SHADOWTRACE_LOGS /var/lib/shadowtrace/log
+ENV SHADOWTRACE_CACHE /var/lib/shadowtrace/cache
 
-RUN mkdir -p $SPIDERFOOT_DATA || true \
-    && mkdir -p $SPIDERFOOT_LOGS || true \
-    && mkdir -p $SPIDERFOOT_CACHE || true \
-    && chown spiderfoot:spiderfoot $SPIDERFOOT_DATA \
-    && chown spiderfoot:spiderfoot $SPIDERFOOT_LOGS \
-    && chown spiderfoot:spiderfoot $SPIDERFOOT_CACHE
+RUN mkdir -p $SHADOWTRACE_DATA || true \
+    && mkdir -p $SHADOWTRACE_LOGS || true \
+    && mkdir -p $SHADOWTRACE_CACHE || true \
+    && chown shadowtrace:shadowtrace $SHADOWTRACE_DATA \
+    && chown shadowtrace:shadowtrace $SHADOWTRACE_LOGS \
+    && chown shadowtrace:shadowtrace $SHADOWTRACE_CACHE
 
-WORKDIR /home/spiderfoot
+WORKDIR /home/shadowtrace
 COPY . .
 
 ENV VIRTUAL_ENV=/opt/venv
@@ -89,11 +89,11 @@ RUN python -m venv "$VIRTUAL_ENV"
 ARG REQUIREMENTS=requirements.txt
 COPY "$REQUIREMENTS" requirements.txt
 
-RUN chown -R spiderfoot:spiderfoot /tools
-RUN chown -R spiderfoot:spiderfoot "$VIRTUAL_ENV"
-RUN chown -R spiderfoot:spiderfoot "/home/spiderfoot"
+RUN chown -R shadowtrace:shadowtrace /tools
+RUN chown -R shadowtrace:shadowtrace "$VIRTUAL_ENV"
+RUN chown -R shadowtrace:shadowtrace "/home/shadowtrace"
 
-USER spiderfoot
+USER shadowtrace
 
 RUN pip install -U pip
 RUN pip install -r "$REQUIREMENTS"
@@ -109,13 +109,13 @@ RUN git clone https://github.com/Tuhinshubhra/CMSeeK && cd CMSeeK \
 RUN git clone https://github.com/EnableSecurity/wafw00f \
     && cd wafw00f \
     && python3 setup.py install
-WORKDIR /home/spiderfoot
+WORKDIR /home/shadowtrace
 
 EXPOSE 5001
 
 # Run the application
-CMD python -c 'from spiderfoot import SpiderFootDb; \
-db = SpiderFootDb({"__database": "/var/lib/spiderfoot/spiderfoot.db"}); \
+CMD python -c 'from shadowtrace import ShadowTraceDb; \
+db = ShadowTraceDb({"__database": "/var/lib/shadowtrace/shadowtrace.db"}); \
 db.configSet({ \
     "sfp_tool_dnstwist:dnstwistpath": "/opt/venv/bin/dnstwist", \
     "sfp_tool_cmseek:cmseekpath": "/tools/CMSeeK/cmseek.py", \
@@ -131,4 +131,4 @@ db.configSet({ \
     "sfp_tool_wappalyzer:wappalyzer_path": "/tools/wappalyzer/src/drivers/npm/cli.js", \
     "sfp_tool_nbtscan:nbtscan_path": "/usr/bin/nbtscan", \
     "sfp_tool_nmap:nmappath": "DISABLED_BECAUSE_NMAP_REQUIRES_ROOT_TO_WORK" \
-})' || true && ./sf.py -l 0.0.0.0:5001
+})' || true && ./st.py -l 0.0.0.0:5001

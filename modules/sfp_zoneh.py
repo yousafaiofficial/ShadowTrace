@@ -13,10 +13,10 @@
 
 import re
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_zoneh(SpiderFootPlugin):
+class sfp_zoneh(ShadowTracePlugin):
 
     meta = {
         'name': "Zone-H Defacement Check",
@@ -149,7 +149,7 @@ class sfp_zoneh(SpiderFootPlugin):
 
         ret = self.lookupItem(eventData, content)
         if ret:
-            evt = SpiderFootEvent(evtType, ret, self.__name__, event)
+            evt = ShadowTraceEvent(evtType, ret, self.__name__, event)
             self.notifyListeners(evt)
 
 # End of sfp_zoneh class

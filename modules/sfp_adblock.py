@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
 # Name:         sfp_adblock
-# Purpose:      SpiderFoot plug-in to test if external/internally linked pages
+# Purpose:      ShadowTrace plug-in to test if external/internally linked pages
 #               would be blocked by AdBlock Plus.
 #
 # Author:      Steve Micallef <steve@binarypool.com>
@@ -13,10 +13,10 @@
 
 import adblockparser
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 
-class sfp_adblock(SpiderFootPlugin):
+class sfp_adblock(ShadowTracePlugin):
 
     meta = {
         'name': "AdBlock Check",
@@ -155,17 +155,17 @@ class sfp_adblock(SpiderFootPlugin):
         try:
             if eventName == 'PROVIDER_JAVASCRIPT':
                 if self.rules and self.rules.should_block(eventData, {'third-party': True, 'script': True}):
-                    evt = SpiderFootEvent("URL_ADBLOCKED_EXTERNAL", eventData, self.__name__, event)
+                    evt = ShadowTraceEvent("URL_ADBLOCKED_EXTERNAL", eventData, self.__name__, event)
                     self.notifyListeners(evt)
 
             if eventName == 'LINKED_URL_EXTERNAL':
                 if self.rules and self.rules.should_block(eventData, {'third-party': True}):
-                    evt = SpiderFootEvent("URL_ADBLOCKED_EXTERNAL", eventData, self.__name__, event)
+                    evt = ShadowTraceEvent("URL_ADBLOCKED_EXTERNAL", eventData, self.__name__, event)
                     self.notifyListeners(evt)
 
             if eventName == 'LINKED_URL_INTERNAL':
                 if self.rules and self.rules.should_block(eventData):
-                    evt = SpiderFootEvent("URL_ADBLOCKED_INTERNAL", eventData, self.__name__, event)
+                    evt = ShadowTraceEvent("URL_ADBLOCKED_INTERNAL", eventData, self.__name__, event)
                     self.notifyListeners(evt)
 
         except ValueError as e:

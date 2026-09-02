@@ -15,7 +15,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-from spiderfoot import SpiderFootEvent, SpiderFootPlugin
+from shadowtrace import ShadowTraceEvent, ShadowTracePlugin
 
 sites = {
     # Search string to use, domain name the profile will sit on within
@@ -44,7 +44,7 @@ sites = {
 }
 
 
-class sfp_socialprofiles(SpiderFootPlugin):
+class sfp_socialprofiles(ShadowTracePlugin):
 
     meta = {
         'name': "Social Media Profile Finder",
@@ -198,7 +198,7 @@ class sfp_socialprofiles(SpiderFootPlugin):
                 return
 
             # Submit the results for analysis
-            evt = SpiderFootEvent(
+            evt = ShadowTraceEvent(
                 "RAW_RIR_DATA", str(res), self.__name__, event
             )
             self.notifyListeners(evt)
@@ -257,7 +257,7 @@ class sfp_socialprofiles(SpiderFootPlugin):
 
                     self.info("Social Media Profile found at " + site + ": " + match)
                     match = urllib.parse.unquote(match)
-                    evt = SpiderFootEvent(
+                    evt = ShadowTraceEvent(
                         "SOCIAL_MEDIA", site + ": <SFURL>" + match + "</SFURL>", self.__name__, event
                     )
                     self.notifyListeners(evt)
